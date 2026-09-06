@@ -14,6 +14,30 @@ a re-creation. The prototype's `DCLogic` state machine is ported to a real React
 > scripted command set. It is a visual prototype (a theatrical HUD), exactly as designed —
 > there is no real scanning, exploitation, or network tooling of any kind.
 
+## Kom i gang / Getting started
+
+Hent repoet ned og kjør appen lokalt — ingen byggesteg trengs (`app.js` er
+ferdigbygget og committet, og React + design-systemet ligger vendret i `vendor/`,
+så det kjører også offline):
+
+```bash
+git clone https://github.com/sebbeboia/GUI---GODMODE.git
+cd GUI---GODMODE/app
+node server.mjs            # → http://localhost:5173
+# eller: python3 -m http.server 5173
+```
+
+Åpne `http://localhost:5173` i nettleseren.
+
+Skal du **endre koden**? Rediger `src/app.jsx`, bygg på nytt, og oppdater nettleseren:
+
+```bash
+npm install               # esbuild (bygg) + playwright/react (dev/verifisering)
+npm run watch             # bygger app.js på nytt ved hver endring
+# npm run start           # bygg + serve i ett
+# npm run verify          # headless test av alle seks skjermene
+```
+
 ## Run it
 
 No build step is required to run — `app.js` is committed pre-built, and React + the design
