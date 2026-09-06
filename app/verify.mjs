@@ -23,7 +23,11 @@ const port = server.address().port;
 const base = `http://127.0.0.1:${port}`;
 
 const errors = [];
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell' });
+// Let Playwright resolve its own bundled browser by default (portable across
+// machines / CI). Override with PW_CHROMIUM_PATH=/path/to/chrome if needed.
+const browser = await chromium.launch(
+  process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {}
+);
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));

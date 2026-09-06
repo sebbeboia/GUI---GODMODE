@@ -260,19 +260,20 @@ class Pwnboard extends React.Component {
       this.setState({ screen: 'osint', osintTool: tool.id, osintResults: null, osintRunning: false });
       return;
     }
+    const target = tool.target || TARGET;
     const job = {
       id: ++this.jid,
       tool: tool.name,
       cat: tool.cat,
       color: tool.color,
-      target: TARGET,
-      cmd: (tool.cmd || 'run').replace('{t}', TARGET),
+      target,
+      cmd: (tool.cmd || 'run').replace('{t}', target),
       progress: 2,
       status: 'running',
     };
     this.setState((s) => ({ jobs: [job, ...s.jobs], screen: 'monitor' }));
-    this._pushTerm([`[*] launching ${tool.name} → ${TARGET}`, `> ${job.cmd}`]);
-    this._pushActivity(`${tool.name} launched on ${TARGET}`, tool.color);
+    this._pushTerm([`[*] launching ${tool.name} → ${target}`, `> ${job.cmd}`]);
+    this._pushActivity(`${tool.name} launched on ${target}`, tool.color);
   }
   abort(id) {
     const j = this.state.jobs.find((x) => x.id === id);
@@ -452,8 +453,7 @@ class Pwnboard extends React.Component {
     }
     if (parts[0] === 'scan') {
       const t = parts[1] || TARGET;
-      this._pushTerm([`[*] queuing nmap → ${t}`, `> nmap -sV -sC -p- ${t}`]);
-      this.launchTool({ name: 'nmap', cat: 'KALI', color: '#00d4ff', cmd: 'nmap -sV -sC -p- {t}' });
+      this.launchTool({ name: 'nmap', cat: 'KALI', color: '#00d4ff', cmd: 'nmap -sV -sC -p- {t}', target: t });
       return;
     }
     if (parts[0] === 'ai') {
