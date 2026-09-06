@@ -3,6 +3,10 @@
 A JARVIS-style pentest **command HUD** — the real implementation of the Claude Design
 handoff in [`../project/PWNBOARD.dc.html`](../project/PWNBOARD.dc.html).
 
+![PWNBOARD command center](../docs/screenshots/pwnboard-command.png)
+
+> More screens in the [top-level README](../README.md#skjermer--screens).
+
 It is a **standalone runnable app built on the exported PwnboardUI design system**: the app
 loads the design system's real component bundle (`vendor/pwnboard-ui/`) so every surface —
 cards, badges, progress bars, the ArcReactor, the waveform — is the actual DS component, not
