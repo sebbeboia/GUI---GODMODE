@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PWNBOARD — Pentest Command HUD</title>
+
+  <!-- Design-system stylesheet: tokens, component classes, fonts (JetBrains Mono / Inter), keyframes. -->
+  <link rel="stylesheet" href="vendor/pwnboard-ui/_ds_bundle.css">
+
+  <style>
+    /* Global glue ported verbatim from the PWNBOARD design's helmet block. */
+    html, body { margin: 0; background: #050a12; }
+    * { box-sizing: border-box; }
+    #root { min-height: 100vh; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #050a12; }
+    ::-webkit-scrollbar-thumb { background: #12293a; border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: #00d4ff; }
+
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { color: #5fe4ff; }
+
+    input.pwn-native {
+      background: #04080e; border: 1px solid #16283a; color: #c0d0e0;
+      font-family: 'JetBrains Mono', monospace; outline: none;
+    }
+    input.pwn-native:focus { border-color: #00d4ff; }
+
+    select.pwn-native {
+      background: #04080e; border: 1px solid #16283a; color: #c0d0e0;
+      font-family: 'JetBrains Mono', monospace; padding: 8px 10px; font-size: 12px; outline: none;
+    }
+    select.pwn-native:focus { border-color: #00d4ff; }
+
+    /* Tool-launcher card hover (the design's `style-hover` behaviour, as real CSS).
+       Inline styles set the base; !important lets the hover win over them. */
+    .pwn-tool:hover {
+      border-color: #00d4ff !important;
+      transform: translateY(-2px);
+      background: linear-gradient(160deg, #0d1826, #08101b) !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React must be on the page before the design-system bundle (it reads window.React). -->
+  <script src="vendor/react.production.min.js"></script>
+  <script src="vendor/react-dom.production.min.js"></script>
+  <script src="vendor/pwnboard-ui/_ds_bundle.js"></script>
+
+  <!-- The PWNBOARD app (compiled from src/app.jsx). -->
+  <script src="app.js"></script>
+</body>
+</html>
