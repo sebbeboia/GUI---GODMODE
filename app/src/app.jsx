@@ -587,7 +587,7 @@ class Pwnboard extends React.Component {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: 13, letterSpacing: 2, color: '#c8d6e4' }}>{title}</span>
+          <h1 style={{ margin: 0, fontSize: 13, fontWeight: 400, letterSpacing: 2, color: '#c8d6e4' }}>{title}</h1>
           <span style={{ fontSize: 10, letterSpacing: 1, color: '#4a6a8a', marginTop: 2 }}>{sub}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
@@ -646,7 +646,7 @@ class Pwnboard extends React.Component {
               <span style={SECTION_LABEL}>Activity stream</span>
               <span style={{ fontSize: 10, color: '#4a6a8a', letterSpacing: 1 }}>live</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, maxHeight: 290, overflow: 'auto' }}>
+            <div role="log" aria-live="polite" aria-label="Activity stream" style={{ display: 'flex', flexDirection: 'column', gap: 9, maxHeight: 290, overflow: 'auto' }}>
               {s.activity.map((a, i) => (
                 <div key={i} style={{ display: 'flex', gap: 10, fontSize: 12, lineHeight: 1.5 }}>
                   <span style={{ color: '#4a6a8a', flex: '0 0 62px' }}>{a.t}</span>
@@ -778,18 +778,20 @@ class Pwnboard extends React.Component {
             </div>
             <Button onClick={() => this.runOsint()}>Run trace</Button>
           </div>
-          {s.osintRunning && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '46px 0' }}>
-              <Spinner size={38} />
-              <span style={{ fontSize: 12, color: '#00d4ff', letterSpacing: 1.5 }}>QUERYING SOURCES…</span>
-            </div>
-          )}
-          {showResults && (
-            <DataTable columns={columns} rows={s.osintResults || []} rowKey={(r) => r.id} emptyMessage="NO SIGNALS" />
-          )}
-          {idle && (
-            <div style={{ padding: '46px 0', textAlign: 'center', color: '#3f5a72', fontSize: 12, letterSpacing: 1 }}>— enter a target and run a trace —</div>
-          )}
+          <div aria-live="polite">
+            {s.osintRunning && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '46px 0' }}>
+                <Spinner size={38} />
+                <span style={{ fontSize: 12, color: '#00d4ff', letterSpacing: 1.5 }}>QUERYING SOURCES…</span>
+              </div>
+            )}
+            {showResults && (
+              <DataTable columns={columns} rows={s.osintResults || []} rowKey={(r) => r.id} emptyMessage="NO SIGNALS" />
+            )}
+            {idle && (
+              <div style={{ padding: '46px 0', textAlign: 'center', color: '#3f5a72', fontSize: 12, letterSpacing: 1 }}>— enter a target and run a trace —</div>
+            )}
+          </div>
         </Card>
       </div>
     );
@@ -921,11 +923,13 @@ class Pwnboard extends React.Component {
           <span style={{ marginLeft: 8, fontSize: 11, color: '#4a6a8a', letterSpacing: 1 }}>root@pwnboard — /opt/pwnboard</span>
         </div>
         <div ref={this.termRef} style={{ background: '#04080e', height: 452, overflow: 'auto', padding: '14px 16px', fontSize: 12.5, lineHeight: 1.65 }}>
-          {s.terminal.map((line, i) => (
-            <div key={i} style={lineStyle(line.text)}>
-              {line.text}
-            </div>
-          ))}
+          <div role="log" aria-live="polite" aria-label="Terminal output">
+            {s.terminal.map((line, i) => (
+              <div key={i} style={lineStyle(line.text)}>
+                {line.text}
+              </div>
+            ))}
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
             <span style={{ color: '#00ff88' }}>root@pwnboard</span>
             <span style={{ color: '#4a6a8a' }}>:</span>

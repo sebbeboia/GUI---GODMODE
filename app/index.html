@@ -49,6 +49,17 @@
       outline: 2px solid #00d4ff;
       outline-offset: 2px;
     }
+
+    /* Respect reduced-motion: near-disable the design-system keyframe
+       animations (spinner, waveform, arc reactor) and all transitions. */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
 </head>
 <body>
