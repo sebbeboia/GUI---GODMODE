@@ -1,5 +1,7 @@
 # GUI---GODMODE
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
 **PWNBOARD** — a JARVIS-style pentest command HUD. A real, runnable implementation of a
 Claude Design handoff, built on the exported PwnboardUI design system. The app lives in
 [`app/`](app/) (see [`app/README.md`](app/README.md) for full details).
