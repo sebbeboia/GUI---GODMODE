@@ -190,7 +190,7 @@ var PwnboardUI = (() => {
       }
     );
   }
-  function StatCard({ label, value, icon: Icon, color = "#00d4ff", className }) {
+  function StatCard({ label, value, icon: Icon, color = "#C8F04B", className }) {
     return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: cn("jarvis-card p-5 relative overflow-hidden group", className), children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "div",
@@ -224,35 +224,35 @@ var PwnboardUI = (() => {
         "div",
         {
           className: "absolute inset-0 rounded-full",
-          style: { border: "2px solid #00d4ff40", animation: "arcPulse 3s ease-in-out infinite" }
+          style: { border: "2px solid #C8F04B40", animation: "arcPulse 3s ease-in-out infinite" }
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "div",
         {
           className: "absolute inset-1 rounded-full",
-          style: { border: "1px dashed #00d4ff30", animation: "arcRotate 8s linear infinite" }
+          style: { border: "1px dashed #C8F04B30", animation: "arcRotate 8s linear infinite" }
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "div",
         {
           className: "absolute rounded-full",
-          style: { inset: "6px", border: "2px solid #00d4ff60", boxShadow: "0 0 15px #00d4ff40, inset 0 0 10px #00d4ff20" }
+          style: { inset: "6px", border: "2px solid #C8F04B60", boxShadow: "0 0 15px #C8F04B40, inset 0 0 10px #C8F04B20" }
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "div",
         {
           className: "absolute rounded-full",
-          style: { inset: "12px", background: "radial-gradient(circle, #00d4ff60 0%, #00d4ff20 50%, transparent 70%)", animation: "arcPulse 2s ease-in-out infinite" }
+          style: { inset: "12px", background: "radial-gradient(circle, #C8F04B60 0%, #C8F04B20 50%, transparent 70%)", animation: "arcPulse 2s ease-in-out infinite" }
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "div",
         {
           className: "absolute rounded-full",
-          style: { inset: `${size / 2 - 3}px`, background: "#00d4ff", boxShadow: "0 0 10px #00d4ff" }
+          style: { inset: `${size / 2 - 3}px`, background: "#C8F04B", boxShadow: "0 0 10px #C8F04B" }
         }
       )
     ] });

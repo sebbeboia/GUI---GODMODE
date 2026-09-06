@@ -5,65 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PWNBOARD — Pentest Command HUD</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <meta name="theme-color" content="#050a12">
+  <meta name="theme-color" content="#0A0C10">
 
-  <!-- Design-system stylesheet: tokens, component classes, fonts (JetBrains Mono / Inter), keyframes. -->
+  <!-- Design-system stylesheet: base component classes + keyframes. Retuned below. -->
   <link rel="stylesheet" href="vendor/pwnboard-ui/_ds_bundle.css">
 
   <style>
-    /* Global glue ported verbatim from the PWNBOARD design's helmet block. */
-    html { color-scheme: dark; }
-    html, body { margin: 0; background: #050a12; }
+    /* ───────────────────────────────────────────────────────────────
+       YEETUZ-X-V1 theme — palette "SVOVEL & SKIFER", motif "THE RACK".
+       Sulfur accent on cool graphite; every bay carries a 2px left spine.
+       Fonts (installed system-wide): Bricolage Grotesque / IBM Plex Sans /
+       IBM Plex Mono — resolved locally, so this works offline.
+       ─────────────────────────────────────────────────────────────── */
+    :root {
+      --void: #0A0C10; --deck: #0F131A; --deck-2: #151A23; --deck-3: #1B212B;
+      --edge: #242C38; --edge-soft: #1A202A;
+      --ink: #E7EBF0; --ink-dim: #97A2B2; --ink-faint: #667283;
+      --live: #C8F04B; --live-deep: #93B32E; --live-glow: rgba(200,240,75,0.13);
+      --ember: #FF7A45; --crit: #FF4D6D;
+      --mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+      --sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --display: 'Bricolage Grotesque', 'IBM Plex Sans', sans-serif;
+      /* Flip the design system's built-in accent variable to sulfur so its
+         card edges, corner ticks and hud-corners theme automatically. */
+      --jarvis-cyan: #C8F04B;
+      color-scheme: dark;
+    }
+
+    html, body { margin: 0; background: var(--void); }
     * { box-sizing: border-box; }
-    body { touch-action: manipulation; }
+    body { touch-action: manipulation; font-family: var(--mono); color: var(--ink); }
     #root { min-height: 100vh; }
 
-    /* Skip link: off-screen until keyboard focus, then pinned top-left. */
+    /* Skip link */
     .skip-link {
       position: absolute; left: 8px; top: -60px; z-index: 100;
-      padding: 8px 14px; background: #00d4ff; color: #04080e;
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 1px;
-      transition: top .15s;
+      padding: 8px 14px; background: var(--live); color: var(--void);
+      font-family: var(--mono); font-size: 12px; letter-spacing: 1px; transition: top .15s;
     }
-    .skip-link:focus { top: 8px; color: #04080e; }
+    .skip-link:focus { top: 8px; }
 
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #050a12; }
-    ::-webkit-scrollbar-thumb { background: #12293a; border-radius: 0; }
-    ::-webkit-scrollbar-thumb:hover { background: #00d4ff; }
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--edge); border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--live); }
 
-    a { color: #00d4ff; text-decoration: none; }
-    a:hover { color: #5fe4ff; }
+    a { color: var(--live); text-decoration: none; }
+    a:hover { color: #dcff88; }
 
-    input.pwn-native {
-      background: #04080e; border: 1px solid #16283a; color: #c0d0e0;
-      font-family: 'JetBrains Mono', monospace;
+    /* Native inputs / selects used by the app */
+    input.pwn-native, select.pwn-native {
+      background: var(--deck-3); border: 1px solid var(--edge); color: var(--ink);
+      font-family: var(--mono);
     }
-    input.pwn-native:focus-visible { border-color: #00d4ff; outline: 2px solid #00d4ff; outline-offset: 1px; }
-
-    select.pwn-native {
-      background: #04080e; border: 1px solid #16283a; color: #c0d0e0;
-      font-family: 'JetBrains Mono', monospace; padding: 8px 10px; font-size: 12px;
+    select.pwn-native { padding: 8px 10px; font-size: 12px; }
+    input.pwn-native:focus-visible, select.pwn-native:focus-visible {
+      border-color: var(--live); outline: 2px solid var(--live); outline-offset: 1px;
     }
-    select.pwn-native:focus-visible { border-color: #00d4ff; outline: 2px solid #00d4ff; outline-offset: 1px; }
 
-    /* Tool-launcher card hover (the design's `style-hover` behaviour, as real CSS).
-       Inline styles set the base; !important lets the hover win over them. */
+    /* Tool-launcher card hover */
     .pwn-tool:hover {
-      border-color: #00d4ff !important;
+      border-color: var(--live) !important;
+      border-left-color: var(--live) !important;
       transform: translateY(-2px);
-      background: linear-gradient(160deg, #0d1826, #08101b) !important;
+      background: linear-gradient(160deg, #182013, #10140d) !important;
     }
 
-    /* Visible keyboard-focus ring for the custom (non-native) interactive
-       elements: nav items, tool cards, OSINT modules, and toggles. */
-    .pwn-clickable:focus-visible {
-      outline: 2px solid #00d4ff;
-      outline-offset: 2px;
+    /* Keyboard-focus ring for the custom buttons */
+    .pwn-clickable:focus-visible { outline: 2px solid var(--live); outline-offset: 2px; }
+
+    /* ── THE RACK — every design-system card is a bay with a 2px left spine ── */
+    .jarvis-card {
+      background: var(--deck-2) !important;
+      border: 1px solid var(--edge) !important;
+      border-left: 2px solid var(--edge) !important;
+      border-radius: var(--radius-card, 8px) !important;
+    }
+    .jarvis-card:hover {
+      border-color: var(--edge) !important;
+      border-left-color: var(--live) !important;
+      box-shadow: 0 0 0 1px var(--live-glow), inset 2px 0 0 var(--live-glow) !important;
+    }
+    .jarvis-bg {
+      background:
+        linear-gradient(var(--live-glow) 1px, transparent 0),
+        linear-gradient(90deg, var(--live-glow) 1px, transparent 0),
+        radial-gradient(ellipse at 50% 0, #10160c 0, var(--void) 70%) !important;
+      background-size: 50px 50px, 50px 50px, 100% 100% !important;
     }
 
-    /* Respect reduced-motion: near-disable the design-system keyframe
-       animations (spinner, waveform, arc reactor) and all transitions. */
+    /* Buttons */
+    .btn-jarvis {
+      background: var(--deck-2) !important; border: 1px solid var(--edge) !important;
+      color: var(--ink) !important; font-family: var(--mono) !important;
+    }
+    .btn-jarvis:hover {
+      background: var(--deck-3) !important; border-color: var(--live) !important;
+      color: var(--live) !important; box-shadow: 0 0 14px var(--live-glow) !important;
+      text-shadow: none !important;
+    }
+    .btn-jarvis-danger { border-color: var(--crit) !important; color: var(--crit) !important; background: rgba(255,77,109,0.07) !important; }
+    .btn-jarvis-danger:hover { border-color: var(--crit) !important; color: var(--crit) !important; box-shadow: 0 0 14px rgba(255,77,109,0.25) !important; }
+
+    /* Inputs (design-system) */
+    .input-jarvis {
+      background: var(--deck-3) !important; border: 1px solid var(--edge) !important;
+      color: var(--ink) !important; font-family: var(--mono) !important;
+    }
+    .input-jarvis:focus { border-color: var(--live) !important; box-shadow: 0 0 0 1px var(--live-glow) !important; }
+    .input-jarvis::placeholder { color: var(--ink-faint) !important; }
+
+    .jarvis-badge { font-family: var(--mono) !important; }
+
+    /* Text glows → one sulfur family, ember/crit rationed */
+    .glow-cyan, .glow-green { text-shadow: 0 0 7px rgba(200,240,75,.5), 0 0 15px rgba(200,240,75,.25) !important; }
+    .glow-orange { text-shadow: 0 0 7px rgba(255,122,69,.5) !important; }
+    .glow-red { text-shadow: 0 0 7px rgba(255,77,109,.5) !important; }
+
+    /* Reduced-motion: near-disable animations + transitions */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.001ms !important;

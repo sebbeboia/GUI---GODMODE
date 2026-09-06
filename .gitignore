@@ -1,0 +1,4 @@
+# Local live backend — never commit (runs real tooling, may hold API keys)
+/backend/
+*.token
+.env
