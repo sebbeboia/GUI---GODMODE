@@ -54,7 +54,7 @@
     height: 22,
     borderRadius: 999,
     position: "relative",
-    transition: "all .2s",
+    transition: "background .2s, box-shadow .2s",
     background: on ? c : "#16283a",
     boxShadow: on ? `0 0 10px ${c}55` : "none",
     flex: "0 0 42px"
@@ -67,7 +67,7 @@
     height: 18,
     borderRadius: "50%",
     background: "#04080e",
-    transition: "all .2s"
+    transition: "left .2s"
   });
   var SECTION_LABEL = {
     fontFamily: "'JetBrains Mono', monospace",
@@ -76,11 +76,16 @@
     textTransform: "uppercase",
     color: "#00d4ff"
   };
-  var onActivate = (fn) => (e) => {
-    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-      e.preventDefault();
-      fn();
-    }
+  var BTN_RESET = {
+    appearance: "none",
+    WebkitAppearance: "none",
+    font: "inherit",
+    color: "inherit",
+    textAlign: "left",
+    border: "none",
+    background: "transparent",
+    margin: 0,
+    width: "100%"
   };
   var TARGET = "10.10.14.7";
   var KALI = [
@@ -445,17 +450,16 @@
           const active = s.screen === id;
           const badge = id === "monitor" ? running : 0;
           return /* @__PURE__ */ React.createElement(
-            "div",
+            "button",
             {
               key: id,
+              type: "button",
               className: "pwn-clickable",
-              role: "button",
-              tabIndex: 0,
               "aria-current": active ? "page" : void 0,
               "aria-label": `${label} screen`,
               onClick: () => this.setScreen(id),
-              onKeyDown: onActivate(() => this.setScreen(id)),
               style: {
+                ...BTN_RESET,
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
@@ -463,7 +467,7 @@
                 cursor: "pointer",
                 fontSize: 12.5,
                 letterSpacing: 0.5,
-                transition: "all .15s",
+                transition: "background .15s, color .15s, border-color .15s",
                 borderLeft: `2px solid ${active ? "#00d4ff" : "transparent"}`,
                 background: active ? "rgba(0,212,255,.09)" : "transparent",
                 color: active ? "#00d4ff" : "#8aa0b8"
@@ -530,13 +534,13 @@
           }
         },
         /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column" } }, /* @__PURE__ */ React.createElement("h1", { style: { margin: 0, fontSize: 13, fontWeight: 400, letterSpacing: 2, color: "#c8d6e4" } }, title), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, letterSpacing: 1, color: "#4a6a8a", marginTop: 2 } }, sub)),
-        /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 22 } }, /* @__PURE__ */ React.createElement(Waveform, { bars: 14 }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#00d4ff", letterSpacing: 1 } }, s.clock), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 9.5, letterSpacing: 1, color: "#4a6a8a" } }, "UTC \xB7 TOR ACTIVE")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", border: "1px solid #3a1520", background: "rgba(255,0,64,.06)" } }, /* @__PURE__ */ React.createElement("span", { style: { width: 7, height: 7, borderRadius: "50%", background: "#ff0040", boxShadow: "0 0 8px #ff0040" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, letterSpacing: 1.5, color: "#ff5a7a" } }, "THREAT: ", threat)))
+        /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 22 } }, /* @__PURE__ */ React.createElement(Waveform, { bars: 14 }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#00d4ff", letterSpacing: 1, fontVariantNumeric: "tabular-nums" } }, s.clock), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 9.5, letterSpacing: 1, color: "#4a6a8a" } }, "UTC \xB7 TOR ACTIVE")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", border: "1px solid #3a1520", background: "rgba(255,0,64,.06)" } }, /* @__PURE__ */ React.createElement("span", { style: { width: 7, height: 7, borderRadius: "50%", background: "#ff0040", boxShadow: "0 0 8px #ff0040" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, letterSpacing: 1.5, color: "#ff5a7a" } }, "THREAT: ", threat)))
       );
     }
     renderCommand(running) {
       const s = this.state;
       const v = s.vitals;
-      const vitalRow = (label, val) => /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8aa0b8", marginBottom: 5 } }, /* @__PURE__ */ React.createElement("span", null, label), /* @__PURE__ */ React.createElement("span", { style: { color: "#00d4ff" } }, val, "%")), /* @__PURE__ */ React.createElement(ProgressBar, { value: val }));
+      const vitalRow = (label, val) => /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 11, color: "#8aa0b8", marginBottom: 5 } }, /* @__PURE__ */ React.createElement("span", null, label), /* @__PURE__ */ React.createElement("span", { style: { color: "#00d4ff", fontVariantNumeric: "tabular-nums" } }, val, "%")), /* @__PURE__ */ React.createElement(ProgressBar, { value: val }));
       return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 16 } }, /* @__PURE__ */ React.createElement(StatCard, { label: "Active operations", value: running, color: "#00d4ff" }), /* @__PURE__ */ React.createElement(StatCard, { label: "Findings", value: s.findings, color: "#ffd700" }), /* @__PURE__ */ React.createElement(StatCard, { label: "Tools online", value: 25, color: "#00ff88" }), /* @__PURE__ */ React.createElement(StatCard, { label: "Assets mapped", value: 47, color: "#ff6b35" })), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(0, 1fr)", gap: 20 } }, /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement("span", { style: { ...SECTION_LABEL, alignSelf: "flex-start" } }, "Core status"), /* @__PURE__ */ React.createElement("div", { style: { margin: "14px 0 6px" } }, /* @__PURE__ */ React.createElement(ArcReactor, { size: 140 })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, letterSpacing: 3, color: "#00ff88", textShadow: "0 0 12px rgba(0,255,136,.5)" } }, "ALL SYSTEMS GO"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: "#4a6a8a", letterSpacing: 1, marginTop: 4 } }, "quantized ollama \xB7 llama3-pentest-q4 \xB7 loaded"), /* @__PURE__ */ React.createElement("div", { style: { width: "100%", marginTop: 22, display: "flex", flexDirection: "column", gap: 14 } }, vitalRow("GPU \xB7 inference", v.gpu), vitalRow("CPU \xB7 scans", v.cpu), vitalRow("TOR \xB7 circuit health", v.tor)))), /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("span", { style: SECTION_LABEL }, "Activity stream"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, color: "#4a6a8a", letterSpacing: 1 } }, "live")), /* @__PURE__ */ React.createElement("div", { role: "log", "aria-live": "polite", "aria-label": "Activity stream", style: { display: "flex", flexDirection: "column", gap: 9, maxHeight: 290, overflow: "auto" } }, s.activity.map((a, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { display: "flex", gap: 10, fontSize: 12, lineHeight: 1.5 } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#4a6a8a", flex: "0 0 62px" } }, a.t), /* @__PURE__ */ React.createElement("span", { style: dotStyle(a.color) }), /* @__PURE__ */ React.createElement("span", { style: { color: "#a9bccb", flex: 1 } }, a.msg)))))));
     }
     renderLauncher() {
@@ -546,16 +550,16 @@
         { title: "AI & device exploitation", count: AI.length, tools: AI }
       ];
       return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 26 } }, sections.map((sec) => /* @__PURE__ */ React.createElement("div", { key: sec.title }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 14 } }, /* @__PURE__ */ React.createElement("span", { style: SECTION_LABEL }, sec.title), /* @__PURE__ */ React.createElement("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, #16283a, transparent)" } }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, color: "#4a6a8a", letterSpacing: 1 } }, sec.count, " modules")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 14 } }, sec.tools.map((tool) => /* @__PURE__ */ React.createElement(
-        "div",
+        "button",
         {
           key: tool.id,
+          type: "button",
           className: "pwn-tool pwn-clickable",
-          role: "button",
-          tabIndex: 0,
           "aria-label": `Launch ${tool.name} \u2014 ${tool.desc}`,
           onClick: () => this.launchTool(tool),
-          onKeyDown: onActivate(() => this.launchTool(tool)),
           style: {
+            ...BTN_RESET,
+            display: "block",
             position: "relative",
             border: "1px solid #16283a",
             background: "linear-gradient(160deg, #0a121d, #070d16)",
@@ -585,17 +589,16 @@
       return /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "290px minmax(0, 1fr)", gap: 20 } }, /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 14 } }, "OSINT modules"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 4 } }, OSINT.map((o) => {
         const active = s.osintTool === o.id;
         return /* @__PURE__ */ React.createElement(
-          "div",
+          "button",
           {
             key: o.id,
+            type: "button",
             className: "pwn-clickable",
-            role: "button",
-            tabIndex: 0,
             "aria-pressed": active,
             "aria-label": `${o.name} OSINT module`,
             onClick: () => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false }),
-            onKeyDown: onActivate(() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false })),
             style: {
+              ...BTN_RESET,
               display: "flex",
               alignItems: "center",
               gap: 8,
@@ -603,7 +606,7 @@
               cursor: "pointer",
               fontSize: 12,
               letterSpacing: 0.5,
-              transition: "all .15s",
+              transition: "background .15s, color .15s, border-color .15s",
               border: `1px solid ${active ? "#00ff8855" : "transparent"}`,
               background: active ? "rgba(0,255,136,.08)" : "transparent",
               color: active ? "#00ff88" : "#8aa0b8"
@@ -617,8 +620,11 @@
         {
           value: s.osintQuery,
           onChange: (e) => this.onOsintQuery(e),
-          placeholder: "target@domain.com  \xB7  8.8.8.8  \xB7  @handle",
+          placeholder: "e.g. target@domain.com \xB7 8.8.8.8 \xB7 @handle\u2026",
           "aria-label": `${activeMod.name} \u2014 target to trace`,
+          name: "osint-target",
+          autoComplete: "off",
+          spellCheck: false,
           style: { width: "100%" }
         }
       )), /* @__PURE__ */ React.createElement(Button, { onClick: () => this.runOsint() }, "Run trace")), /* @__PURE__ */ React.createElement("div", { "aria-live": "polite" }, s.osintRunning && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "46px 0" } }, /* @__PURE__ */ React.createElement(Spinner, { size: 38 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: "#00d4ff", letterSpacing: 1.5 } }, "QUERYING SOURCES\u2026")), showResults && /* @__PURE__ */ React.createElement(DataTable, { columns, rows: s.osintResults || [], rowKey: (r) => r.id, emptyMessage: "NO SIGNALS" }), idle && /* @__PURE__ */ React.createElement("div", { style: { padding: "46px 0", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "\u2014 enter a target and run a trace \u2014"))));
@@ -638,22 +644,21 @@
       return /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 } }, /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 16 } }, "Engagement"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, TOGGLE_DEF.map(([key, name, desc, c]) => {
         const on = s.settings[key];
         return /* @__PURE__ */ React.createElement(
-          "div",
+          "button",
           {
             key,
+            type: "button",
             className: "pwn-clickable",
             role: "switch",
-            tabIndex: 0,
             "aria-checked": on,
             "aria-label": `${name} \u2014 ${desc}`,
             onClick: () => this.toggle(key),
-            onKeyDown: onActivate(() => this.toggle(key)),
-            style: { display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }
+            style: { ...BTN_RESET, display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }
           },
           /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#c8d6e4" } }, name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10.5, color: "#5a7286" } }, desc)),
           /* @__PURE__ */ React.createElement("div", { style: swTrack(on, c) }, /* @__PURE__ */ React.createElement("div", { style: swKnob(on) }))
         );
-      }))), /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 16 } }, "AI core"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Local model"), /* @__PURE__ */ React.createElement("select", { className: "pwn-native", "aria-label": "Local AI model", value: s.model, onChange: (e) => this.onModel(e) }, MODELS.map((m) => /* @__PURE__ */ React.createElement("option", { key: m, value: m }, m)))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "SOCKS proxy"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", "aria-label": "SOCKS proxy address", style: { padding: "9px 11px", fontSize: 12 }, value: s.proxy, onChange: (e) => this.onProxy(e) })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Engagement scope (CIDR)"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", "aria-label": "Engagement scope (CIDR)", style: { padding: "9px 11px", fontSize: 12 }, value: s.scope, onChange: (e) => this.onScope(e) })))));
+      }))), /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 16 } }, "AI core"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Local model"), /* @__PURE__ */ React.createElement("select", { className: "pwn-native", "aria-label": "Local AI model", name: "ai-model", value: s.model, onChange: (e) => this.onModel(e) }, MODELS.map((m) => /* @__PURE__ */ React.createElement("option", { key: m, value: m }, m)))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "SOCKS proxy"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", "aria-label": "SOCKS proxy address", name: "socks-proxy", autoComplete: "off", spellCheck: false, style: { padding: "9px 11px", fontSize: 12 }, value: s.proxy, onChange: (e) => this.onProxy(e) })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Engagement scope (CIDR)"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", "aria-label": "Engagement scope (CIDR)", name: "engagement-scope", autoComplete: "off", spellCheck: false, style: { padding: "9px 11px", fontSize: 12 }, value: s.scope, onChange: (e) => this.onScope(e) })))));
     }
     renderTerminal() {
       const s = this.state;
@@ -662,11 +667,14 @@
         {
           className: "pwn-native",
           "aria-label": "Terminal command input",
+          name: "terminal-command",
+          autoComplete: "off",
+          spellCheck: false,
           style: { flex: 1, border: "none", background: "transparent", fontSize: 12.5, padding: "2px 0" },
           value: s.cmd,
           onChange: (e) => this.onCmd(e),
           onKeyDown: (e) => this.onCmdKey(e),
-          placeholder: "type a command \u2014 try: help, scan 10.10.14.7, clear"
+          placeholder: "type a command \u2014 try help, scan 10.10.14.7, clear\u2026"
         }
       ))));
     }
@@ -686,7 +694,7 @@
           }
         },
         this.renderSidebar(running),
-        /* @__PURE__ */ React.createElement("div", { style: { flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column" } }, this.renderHeader(threat), /* @__PURE__ */ React.createElement("main", { style: { flex: 1, overflow: "auto", padding: "26px 28px" } }, s.screen === "command" && this.renderCommand(running), s.screen === "launcher" && this.renderLauncher(), s.screen === "osint" && this.renderOsint(), s.screen === "monitor" && this.renderMonitor(), s.screen === "settings" && this.renderSettings(), s.screen === "terminal" && this.renderTerminal()))
+        /* @__PURE__ */ React.createElement("div", { style: { flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column" } }, this.renderHeader(threat), /* @__PURE__ */ React.createElement("main", { id: "main", tabIndex: -1, style: { flex: 1, overflow: "auto", padding: "26px 28px", outline: "none" } }, s.screen === "command" && this.renderCommand(running), s.screen === "launcher" && this.renderLauncher(), s.screen === "osint" && this.renderOsint(), s.screen === "monitor" && this.renderMonitor(), s.screen === "settings" && this.renderSettings(), s.screen === "terminal" && this.renderTerminal()))
       );
     }
   };

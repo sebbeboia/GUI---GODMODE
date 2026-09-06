@@ -48,7 +48,7 @@ report.command = has('COMMAND CENTER') && has('ALL SYSTEMS GO') && has('Activity
 
 // Navigate each screen by clicking the nav labels.
 const nav = async (label) => {
-  await page.click(`nav div:has-text("${label}")`);
+  await page.click(`nav button:has-text("${label}")`);
   await page.waitForTimeout(150);
   return page.textContent('body');
 };

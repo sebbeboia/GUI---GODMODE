@@ -70,7 +70,7 @@ const swTrack = (on, c) => ({
   height: 22,
   borderRadius: 999,
   position: 'relative',
-  transition: 'all .2s',
+  transition: 'background .2s, box-shadow .2s',
   background: on ? c : '#16283a',
   boxShadow: on ? `0 0 10px ${c}55` : 'none',
   flex: '0 0 42px',
@@ -84,7 +84,7 @@ const swKnob = (on) => ({
   height: 18,
   borderRadius: '50%',
   background: '#04080e',
-  transition: 'all .2s',
+  transition: 'left .2s',
 });
 
 const SECTION_LABEL = {
@@ -95,13 +95,19 @@ const SECTION_LABEL = {
   color: '#00d4ff',
 };
 
-// Keyboard activation for elements given button/switch semantics: fire on
-// Enter or Space, matching native <button> behaviour.
-const onActivate = (fn) => (e) => {
-  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-    e.preventDefault();
-    fn();
-  }
+// Reset applied to the custom controls that are real <button>s so they inherit
+// the surrounding typography and layout instead of the browser's button chrome.
+// Each control's own style object (set after this) overrides where it needs to.
+const BTN_RESET = {
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  font: 'inherit',
+  color: 'inherit',
+  textAlign: 'left',
+  border: 'none',
+  background: 'transparent',
+  margin: 0,
+  width: '100%',
 };
 
 const TARGET = '10.10.14.7';
@@ -502,16 +508,15 @@ class Pwnboard extends React.Component {
             const active = s.screen === id;
             const badge = id === 'monitor' ? running : 0;
             return (
-              <div
+              <button
                 key={id}
+                type="button"
                 className="pwn-clickable"
-                role="button"
-                tabIndex={0}
                 aria-current={active ? 'page' : undefined}
                 aria-label={`${label} screen`}
                 onClick={() => this.setScreen(id)}
-                onKeyDown={onActivate(() => this.setScreen(id))}
                 style={{
+                  ...BTN_RESET,
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
@@ -519,7 +524,7 @@ class Pwnboard extends React.Component {
                   cursor: 'pointer',
                   fontSize: 12.5,
                   letterSpacing: 0.5,
-                  transition: 'all .15s',
+                  transition: 'background .15s, color .15s, border-color .15s',
                   borderLeft: `2px solid ${active ? '#00d4ff' : 'transparent'}`,
                   background: active ? 'rgba(0,212,255,.09)' : 'transparent',
                   color: active ? '#00d4ff' : '#8aa0b8',
@@ -546,7 +551,7 @@ class Pwnboard extends React.Component {
                     {badge}
                   </span>
                 ) : null}
-              </div>
+              </button>
             );
           })}
         </nav>
@@ -593,7 +598,7 @@ class Pwnboard extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
           <Waveform bars={14} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <span style={{ fontSize: 13, color: '#00d4ff', letterSpacing: 1 }}>{s.clock}</span>
+            <span style={{ fontSize: 13, color: '#00d4ff', letterSpacing: 1, fontVariantNumeric: 'tabular-nums' }}>{s.clock}</span>
             <span style={{ fontSize: 9.5, letterSpacing: 1, color: '#4a6a8a' }}>UTC · TOR ACTIVE</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '5px 11px', border: '1px solid #3a1520', background: 'rgba(255,0,64,.06)' }}>
@@ -612,7 +617,7 @@ class Pwnboard extends React.Component {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#8aa0b8', marginBottom: 5 }}>
           <span>{label}</span>
-          <span style={{ color: '#00d4ff' }}>{val}%</span>
+          <span style={{ color: '#00d4ff', fontVariantNumeric: 'tabular-nums' }}>{val}%</span>
         </div>
         <ProgressBar value={val} />
       </div>
@@ -678,15 +683,15 @@ class Pwnboard extends React.Component {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 14 }}>
               {sec.tools.map((tool) => (
-                <div
+                <button
                   key={tool.id}
+                  type="button"
                   className="pwn-tool pwn-clickable"
-                  role="button"
-                  tabIndex={0}
                   aria-label={`Launch ${tool.name} — ${tool.desc}`}
                   onClick={() => this.launchTool(tool)}
-                  onKeyDown={onActivate(() => this.launchTool(tool))}
                   style={{
+                    ...BTN_RESET,
+                    display: 'block',
                     position: 'relative',
                     border: '1px solid #16283a',
                     background: 'linear-gradient(160deg, #0a121d, #070d16)',
@@ -703,7 +708,7 @@ class Pwnboard extends React.Component {
                   <div style={{ fontSize: 14.5, color: '#dbe6f0', letterSpacing: 0.5, marginBottom: 5 }}>{tool.name}</div>
                   <div style={{ fontSize: 11, color: '#7f95a8', lineHeight: 1.5, minHeight: 32 }}>{tool.desc}</div>
                   <div style={accentStyle(tool.color)}></div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -731,16 +736,15 @@ class Pwnboard extends React.Component {
             {OSINT.map((o) => {
               const active = s.osintTool === o.id;
               return (
-                <div
+                <button
                   key={o.id}
+                  type="button"
                   className="pwn-clickable"
-                  role="button"
-                  tabIndex={0}
                   aria-pressed={active}
                   aria-label={`${o.name} OSINT module`}
                   onClick={() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false })}
-                  onKeyDown={onActivate(() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false }))}
                   style={{
+                    ...BTN_RESET,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 8,
@@ -748,7 +752,7 @@ class Pwnboard extends React.Component {
                     cursor: 'pointer',
                     fontSize: 12,
                     letterSpacing: 0.5,
-                    transition: 'all .15s',
+                    transition: 'background .15s, color .15s, border-color .15s',
                     border: `1px solid ${active ? '#00ff8855' : 'transparent'}`,
                     background: active ? 'rgba(0,255,136,.08)' : 'transparent',
                     color: active ? '#00ff88' : '#8aa0b8',
@@ -756,7 +760,7 @@ class Pwnboard extends React.Component {
                 >
                   <span style={{ width: 16 }}>›</span>
                   <span style={{ flex: 1 }}>{o.name}</span>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -771,8 +775,11 @@ class Pwnboard extends React.Component {
               <Input
                 value={s.osintQuery}
                 onChange={(e) => this.onOsintQuery(e)}
-                placeholder="target@domain.com  ·  8.8.8.8  ·  @handle"
+                placeholder="e.g. target@domain.com · 8.8.8.8 · @handle…"
                 aria-label={`${activeMod.name} — target to trace`}
+                name="osint-target"
+                autoComplete="off"
+                spellCheck={false}
                 style={{ width: '100%' }}
               />
             </div>
@@ -862,16 +869,15 @@ class Pwnboard extends React.Component {
             {TOGGLE_DEF.map(([key, name, desc, c]) => {
               const on = s.settings[key];
               return (
-                <div
+                <button
                   key={key}
+                  type="button"
                   className="pwn-clickable"
                   role="switch"
-                  tabIndex={0}
                   aria-checked={on}
                   aria-label={`${name} — ${desc}`}
                   onClick={() => this.toggle(key)}
-                  onKeyDown={onActivate(() => this.toggle(key))}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                  style={{ ...BTN_RESET, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <span style={{ fontSize: 13, color: '#c8d6e4' }}>{name}</span>
@@ -880,7 +886,7 @@ class Pwnboard extends React.Component {
                   <div style={swTrack(on, c)}>
                     <div style={swKnob(on)}></div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -890,7 +896,7 @@ class Pwnboard extends React.Component {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>Local model</span>
-              <select className="pwn-native" aria-label="Local AI model" value={s.model} onChange={(e) => this.onModel(e)}>
+              <select className="pwn-native" aria-label="Local AI model" name="ai-model" value={s.model} onChange={(e) => this.onModel(e)}>
                 {MODELS.map((m) => (
                   <option key={m} value={m}>
                     {m}
@@ -900,11 +906,11 @@ class Pwnboard extends React.Component {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>SOCKS proxy</span>
-              <input className="pwn-native" aria-label="SOCKS proxy address" style={{ padding: '9px 11px', fontSize: 12 }} value={s.proxy} onChange={(e) => this.onProxy(e)} />
+              <input className="pwn-native" aria-label="SOCKS proxy address" name="socks-proxy" autoComplete="off" spellCheck={false} style={{ padding: '9px 11px', fontSize: 12 }} value={s.proxy} onChange={(e) => this.onProxy(e)} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>Engagement scope (CIDR)</span>
-              <input className="pwn-native" aria-label="Engagement scope (CIDR)" style={{ padding: '9px 11px', fontSize: 12 }} value={s.scope} onChange={(e) => this.onScope(e)} />
+              <input className="pwn-native" aria-label="Engagement scope (CIDR)" name="engagement-scope" autoComplete="off" spellCheck={false} style={{ padding: '9px 11px', fontSize: 12 }} value={s.scope} onChange={(e) => this.onScope(e)} />
             </div>
           </div>
         </Card>
@@ -937,11 +943,14 @@ class Pwnboard extends React.Component {
             <input
               className="pwn-native"
               aria-label="Terminal command input"
+              name="terminal-command"
+              autoComplete="off"
+              spellCheck={false}
               style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 12.5, padding: '2px 0' }}
               value={s.cmd}
               onChange={(e) => this.onCmd(e)}
               onKeyDown={(e) => this.onCmdKey(e)}
-              placeholder="type a command — try: help, scan 10.10.14.7, clear"
+              placeholder="type a command — try help, scan 10.10.14.7, clear…"
             />
           </div>
         </div>
@@ -966,7 +975,7 @@ class Pwnboard extends React.Component {
         {this.renderSidebar(running)}
         <div style={{ flex: '1 1 0', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
           {this.renderHeader(threat)}
-          <main style={{ flex: 1, overflow: 'auto', padding: '26px 28px' }}>
+          <main id="main" tabIndex={-1} style={{ flex: 1, overflow: 'auto', padding: '26px 28px', outline: 'none' }}>
             {s.screen === 'command' && this.renderCommand(running)}
             {s.screen === 'launcher' && this.renderLauncher()}
             {s.screen === 'osint' && this.renderOsint()}
