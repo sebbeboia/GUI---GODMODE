@@ -76,6 +76,12 @@
     textTransform: "uppercase",
     color: "#00d4ff"
   };
+  var onActivate = (fn) => (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      fn();
+    }
+  };
   var TARGET = "10.10.14.7";
   var KALI = [
     ["nmap", "Network mapper \u2014 service & version detection", "#00d4ff", "nmap -sV -sC -p- {t}"],
@@ -442,7 +448,13 @@
             "div",
             {
               key: id,
+              className: "pwn-clickable",
+              role: "button",
+              tabIndex: 0,
+              "aria-current": active ? "page" : void 0,
+              "aria-label": `${label} screen`,
               onClick: () => this.setScreen(id),
+              onKeyDown: onActivate(() => this.setScreen(id)),
               style: {
                 display: "flex",
                 alignItems: "center",
@@ -537,8 +549,12 @@
         "div",
         {
           key: tool.id,
-          className: "pwn-tool",
+          className: "pwn-tool pwn-clickable",
+          role: "button",
+          tabIndex: 0,
+          "aria-label": `Launch ${tool.name} \u2014 ${tool.desc}`,
           onClick: () => this.launchTool(tool),
+          onKeyDown: onActivate(() => this.launchTool(tool)),
           style: {
             position: "relative",
             border: "1px solid #16283a",
@@ -572,7 +588,13 @@
           "div",
           {
             key: o.id,
+            className: "pwn-clickable",
+            role: "button",
+            tabIndex: 0,
+            "aria-pressed": active,
+            "aria-label": `${o.name} OSINT module`,
             onClick: () => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false }),
+            onKeyDown: onActivate(() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false })),
             style: {
               display: "flex",
               alignItems: "center",
@@ -598,7 +620,7 @@
           placeholder: "target@domain.com  \xB7  8.8.8.8  \xB7  @handle",
           style: { width: "100%" }
         }
-      )), /* @__PURE__ */ React.createElement("div", { onClick: () => this.runOsint(), style: { display: "inline-block", cursor: "pointer" } }, /* @__PURE__ */ React.createElement(Button, null, "Run trace"))), s.osintRunning && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "46px 0" } }, /* @__PURE__ */ React.createElement(Spinner, { size: 38 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: "#00d4ff", letterSpacing: 1.5 } }, "QUERYING SOURCES\u2026")), showResults && /* @__PURE__ */ React.createElement(DataTable, { columns, rows: s.osintResults || [], rowKey: (r) => r.id, emptyMessage: "NO SIGNALS" }), idle && /* @__PURE__ */ React.createElement("div", { style: { padding: "46px 0", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "\u2014 enter a target and run a trace \u2014")));
+      )), /* @__PURE__ */ React.createElement(Button, { onClick: () => this.runOsint() }, "Run trace")), s.osintRunning && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "46px 0" } }, /* @__PURE__ */ React.createElement(Spinner, { size: 38 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: "#00d4ff", letterSpacing: 1.5 } }, "QUERYING SOURCES\u2026")), showResults && /* @__PURE__ */ React.createElement(DataTable, { columns, rows: s.osintResults || [], rowKey: (r) => r.id, emptyMessage: "NO SIGNALS" }), idle && /* @__PURE__ */ React.createElement("div", { style: { padding: "46px 0", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "\u2014 enter a target and run a trace \u2014")));
     }
     renderMonitor() {
       const s = this.state;
@@ -608,13 +630,28 @@
         progressLabel: j.status === "running" ? `${Math.round(j.progress)}% \xB7 streaming` : j.status === "completed" ? "complete \xB7 results ready" : "aborted by operator",
         abortable: j.status === "running"
       }));
-      return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } }, /* @__PURE__ */ React.createElement("span", { style: SECTION_LABEL }, "Active operations \xB7 ", s.jobs.length), /* @__PURE__ */ React.createElement("div", { onClick: () => this.clearDone(), style: { display: "inline-block", cursor: "pointer" } }, /* @__PURE__ */ React.createElement(Button, null, "Clear completed"))), s.jobs.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 14 } }, jobsView.map((j) => /* @__PURE__ */ React.createElement(Card, { key: j.id }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 14, color: "#dbe6f0", letterSpacing: 0.5 } }, j.tool), /* @__PURE__ */ React.createElement("span", { style: tagStyle(j.color) }, j.cat)), /* @__PURE__ */ React.createElement(StatusBadge, { status: j.status })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11.5, color: "#7f95a8", marginBottom: 11, letterSpacing: 0.5 } }, "target ", j.target, "  \xB7  ", j.cmd), /* @__PURE__ */ React.createElement(ProgressBar, { value: j.progress }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 11 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: "#8aa0b8" } }, j.progressLabel), j.abortable && /* @__PURE__ */ React.createElement("div", { onClick: () => this.abort(j.id), style: { display: "inline-block", cursor: "pointer" } }, /* @__PURE__ */ React.createElement(Button, { variant: "danger" }, "Abort")))))), s.jobs.length === 0 && /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { padding: "34px 0", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "no operations running \u2014 launch a tool from the grid")));
+      return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } }, /* @__PURE__ */ React.createElement("span", { style: SECTION_LABEL }, "Active operations \xB7 ", s.jobs.length), /* @__PURE__ */ React.createElement(Button, { onClick: () => this.clearDone() }, "Clear completed")), s.jobs.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 14 } }, jobsView.map((j) => /* @__PURE__ */ React.createElement(Card, { key: j.id }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 14, color: "#dbe6f0", letterSpacing: 0.5 } }, j.tool), /* @__PURE__ */ React.createElement("span", { style: tagStyle(j.color) }, j.cat)), /* @__PURE__ */ React.createElement(StatusBadge, { status: j.status })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11.5, color: "#7f95a8", marginBottom: 11, letterSpacing: 0.5 } }, "target ", j.target, "  \xB7  ", j.cmd), /* @__PURE__ */ React.createElement(ProgressBar, { value: j.progress }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 11 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: "#8aa0b8" } }, j.progressLabel), j.abortable && /* @__PURE__ */ React.createElement(Button, { variant: "danger", onClick: () => this.abort(j.id) }, "Abort"))))), s.jobs.length === 0 && /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { padding: "34px 0", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "no operations running \u2014 launch a tool from the grid")));
     }
     renderSettings() {
       const s = this.state;
       return /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 } }, /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 16 } }, "Engagement"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, TOGGLE_DEF.map(([key, name, desc, c]) => {
         const on = s.settings[key];
-        return /* @__PURE__ */ React.createElement("div", { key, onClick: () => this.toggle(key), style: { display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#c8d6e4" } }, name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10.5, color: "#5a7286" } }, desc)), /* @__PURE__ */ React.createElement("div", { style: swTrack(on, c) }, /* @__PURE__ */ React.createElement("div", { style: swKnob(on) })));
+        return /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            key,
+            className: "pwn-clickable",
+            role: "switch",
+            tabIndex: 0,
+            "aria-checked": on,
+            "aria-label": `${name} \u2014 ${desc}`,
+            onClick: () => this.toggle(key),
+            onKeyDown: onActivate(() => this.toggle(key)),
+            style: { display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }
+          },
+          /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#c8d6e4" } }, name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10.5, color: "#5a7286" } }, desc)),
+          /* @__PURE__ */ React.createElement("div", { style: swTrack(on, c) }, /* @__PURE__ */ React.createElement("div", { style: swKnob(on) }))
+        );
       }))), /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { ...SECTION_LABEL, marginBottom: 16 } }, "AI core"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Local model"), /* @__PURE__ */ React.createElement("select", { className: "pwn-native", value: s.model, onChange: (e) => this.onModel(e) }, MODELS.map((m) => /* @__PURE__ */ React.createElement("option", { key: m, value: m }, m)))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "SOCKS proxy"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", style: { padding: "9px 11px", fontSize: 12 }, value: s.proxy, onChange: (e) => this.onProxy(e) })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, letterSpacing: 1, color: "#7f95a8" } }, "Engagement scope (CIDR)"), /* @__PURE__ */ React.createElement("input", { className: "pwn-native", style: { padding: "9px 11px", fontSize: 12 }, value: s.scope, onChange: (e) => this.onScope(e) })))));
     }
     renderTerminal() {

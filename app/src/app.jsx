@@ -95,6 +95,15 @@ const SECTION_LABEL = {
   color: '#00d4ff',
 };
 
+// Keyboard activation for elements given button/switch semantics: fire on
+// Enter or Space, matching native <button> behaviour.
+const onActivate = (fn) => (e) => {
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+    e.preventDefault();
+    fn();
+  }
+};
+
 const TARGET = '10.10.14.7';
 
 const KALI = [
@@ -495,7 +504,13 @@ class Pwnboard extends React.Component {
             return (
               <div
                 key={id}
+                className="pwn-clickable"
+                role="button"
+                tabIndex={0}
+                aria-current={active ? 'page' : undefined}
+                aria-label={`${label} screen`}
                 onClick={() => this.setScreen(id)}
+                onKeyDown={onActivate(() => this.setScreen(id))}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -665,8 +680,12 @@ class Pwnboard extends React.Component {
               {sec.tools.map((tool) => (
                 <div
                   key={tool.id}
-                  className="pwn-tool"
+                  className="pwn-tool pwn-clickable"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Launch ${tool.name} — ${tool.desc}`}
                   onClick={() => this.launchTool(tool)}
+                  onKeyDown={onActivate(() => this.launchTool(tool))}
                   style={{
                     position: 'relative',
                     border: '1px solid #16283a',
@@ -714,7 +733,13 @@ class Pwnboard extends React.Component {
               return (
                 <div
                   key={o.id}
+                  className="pwn-clickable"
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={active}
+                  aria-label={`${o.name} OSINT module`}
                   onClick={() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false })}
+                  onKeyDown={onActivate(() => this.setState({ osintTool: o.id, osintResults: null, osintRunning: false }))}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -750,9 +775,7 @@ class Pwnboard extends React.Component {
                 style={{ width: '100%' }}
               />
             </div>
-            <div onClick={() => this.runOsint()} style={{ display: 'inline-block', cursor: 'pointer' }}>
-              <Button>Run trace</Button>
-            </div>
+            <Button onClick={() => this.runOsint()}>Run trace</Button>
           </div>
           {s.osintRunning && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: '46px 0' }}>
@@ -788,9 +811,7 @@ class Pwnboard extends React.Component {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={SECTION_LABEL}>Active operations · {s.jobs.length}</span>
-          <div onClick={() => this.clearDone()} style={{ display: 'inline-block', cursor: 'pointer' }}>
-            <Button>Clear completed</Button>
-          </div>
+          <Button onClick={() => this.clearDone()}>Clear completed</Button>
         </div>
         {s.jobs.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -810,9 +831,7 @@ class Pwnboard extends React.Component {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 11 }}>
                   <span style={{ fontSize: 11, color: '#8aa0b8' }}>{j.progressLabel}</span>
                   {j.abortable && (
-                    <div onClick={() => this.abort(j.id)} style={{ display: 'inline-block', cursor: 'pointer' }}>
-                      <Button variant="danger">Abort</Button>
-                    </div>
+                    <Button variant="danger" onClick={() => this.abort(j.id)}>Abort</Button>
                   )}
                 </div>
               </Card>
@@ -840,7 +859,17 @@ class Pwnboard extends React.Component {
             {TOGGLE_DEF.map(([key, name, desc, c]) => {
               const on = s.settings[key];
               return (
-                <div key={key} onClick={() => this.toggle(key)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+                <div
+                  key={key}
+                  className="pwn-clickable"
+                  role="switch"
+                  tabIndex={0}
+                  aria-checked={on}
+                  aria-label={`${name} — ${desc}`}
+                  onClick={() => this.toggle(key)}
+                  onKeyDown={onActivate(() => this.toggle(key))}
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <span style={{ fontSize: 13, color: '#c8d6e4' }}>{name}</span>
                     <span style={{ fontSize: 10.5, color: '#5a7286' }}>{desc}</span>

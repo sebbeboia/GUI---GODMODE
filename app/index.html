@@ -42,6 +42,13 @@
       transform: translateY(-2px);
       background: linear-gradient(160deg, #0d1826, #08101b) !important;
     }
+
+    /* Visible keyboard-focus ring for the custom (non-native) interactive
+       elements: nav items, tool cards, OSINT modules, and toggles. */
+    .pwn-clickable:focus-visible {
+      outline: 2px solid #00d4ff;
+      outline-offset: 2px;
+    }
   </style>
 </head>
 <body>
