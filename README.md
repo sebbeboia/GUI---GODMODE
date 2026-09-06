@@ -37,3 +37,12 @@ npm run watch             # bygger app.js på nytt ved hver endring
 
 Command center · Tool launcher · OSINT workspace · Operation monitor · Settings · Terminal —
 alle interaktive og koblet sammen. Se [`app/README.md`](app/README.md) for detaljer.
+
+| | |
+|---|---|
+| **Command center** | **Tool launcher** |
+| ![Command center](docs/screenshots/pwnboard-command.png) | ![Tool launcher](docs/screenshots/pwnboard-launcher.png) |
+| **OSINT workspace** | **Operation monitor** |
+| ![OSINT workspace](docs/screenshots/pwnboard-osint.png) | ![Operation monitor](docs/screenshots/pwnboard-monitor.png) |
+| **Settings** | **Terminal** |
+| ![Settings](docs/screenshots/pwnboard-settings.png) | ![Terminal](docs/screenshots/pwnboard-terminal.png) |
