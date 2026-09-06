@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <link rel="stylesheet" href="_ds/pwnboard-ui-28d6756d-ba49-4626-a5bd-ce41d030ac71/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/pwnboard-ui-28d6756d-ba49-4626-a5bd-ce41d030ac71/styles.css">
+  <script src="_ds/pwnboard-ui-28d6756d-ba49-4626-a5bd-ce41d030ac71/_ds_bundle.js"></script>
+  <style>
+    *{box-sizing:border-box;}
+    ::-webkit-scrollbar{width:8px;height:8px;}
+    ::-webkit-scrollbar-track{background:#050a12;}
+    ::-webkit-scrollbar-thumb{background:#12293a;border-radius:0;}
+    ::-webkit-scrollbar-thumb:hover{background:#00d4ff;}
+    a{color:#00d4ff;text-decoration:none;} a:hover{color:#5fe4ff;}
+    input.pwn-native{background:#04080e;border:1px solid #16283a;color:#c0d0e0;font-family:'JetBrains Mono',monospace;outline:none;}
+    input.pwn-native:focus{border-color:#00d4ff;}
+    select.pwn-native{background:#04080e;border:1px solid #16283a;color:#c0d0e0;font-family:'JetBrains Mono',monospace;padding:8px 10px;font-size:12px;outline:none;}
+    select.pwn-native:focus{border-color:#00d4ff;}
+  </style>
+</helmet>
+<div style="display:flex;min-height:100vh;background:radial-gradient(1200px 600px at 80% -10%,rgba(0,212,255,.06),transparent 60%),#050a12;font-family:'JetBrains Mono',ui-monospace,monospace;color:#c0d0e0;">
+
+  <aside style="width:238px;flex:0 0 238px;border-right:1px solid #12202e;background:linear-gradient(180deg,#070d16,#050a12);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;">
+    <div style="padding:20px 18px;border-bottom:1px solid #12202e;display:flex;align-items:center;gap:12px;">
+      <x-import component-from-global-scope="PwnboardUI.ArcReactor" size="{{ arcSmall }}" hint-size="36px,36px"></x-import>
+      <div>
+        <div style="font-size:15px;font-weight:700;letter-spacing:2px;color:#00d4ff;">PWNBOARD</div>
+        <div style="font-size:9.5px;letter-spacing:2.5px;color:#4a6a8a;margin-top:2px;">v4.4.4 · GODMODE</div>
+      </div>
+    </div>
+    <nav style="padding:14px 10px;display:flex;flex-direction:column;gap:3px;flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+        <div onClick="{{ n.onClick }}" style="{{ n.style }}">
+          <span style="width:20px;text-align:center;font-size:15px;">{{ n.glyph }}</span>
+          <span style="flex:1;">{{ n.label }}</span>
+          <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ true }}"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#00d4ff;color:#04080e;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ n.badge }}</span></sc-if>
+        </div>
+      </sc-for>
+    </nav>
+    <div style="padding:14px 18px;border-top:1px solid #12202e;font-size:10px;letter-spacing:.5px;color:#4a6a8a;display:flex;align-items:center;gap:8px;">
+      <span style="width:7px;height:7px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88;"></span>
+      operator: sebbeboia
+    </div>
+  </aside>
+
+  <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;">
+    <header style="height:60px;flex:0 0 60px;border-bottom:1px solid #12202e;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(7,13,22,.55);backdrop-filter:blur(6px);">
+      <div style="display:flex;flex-direction:column;">
+        <span style="font-size:13px;letter-spacing:2px;color:#c8d6e4;">{{ screenTitle }}</span>
+        <span style="font-size:10px;letter-spacing:1px;color:#4a6a8a;margin-top:2px;">{{ screenSub }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:22px;">
+        <x-import component-from-global-scope="PwnboardUI.Waveform" bars="{{ barsCount }}" hint-size="72px,26px"></x-import>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;">
+          <span style="font-size:13px;color:#00d4ff;letter-spacing:1px;">{{ clock }}</span>
+          <span style="font-size:9.5px;letter-spacing:1px;color:#4a6a8a;">UTC · TOR ACTIVE</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid #3a1520;background:rgba(255,0,64,.06);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#ff0040;box-shadow:0 0 8px #ff0040;"></span>
+          <span style="font-size:10px;letter-spacing:1.5px;color:#ff5a7a;">THREAT: {{ threat }}</span>
+        </div>
+      </div>
+    </header>
+
+    <main style="flex:1;overflow:auto;padding:26px 28px;">
+
+      <!-- COMMAND CENTER -->
+      <sc-if value="{{ isCommand }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;">
+            <x-import component-from-global-scope="PwnboardUI.StatCard" label="Active operations" value="{{ stats.active }}" color="#00d4ff" hint-size="auto,116px"></x-import>
+            <x-import component-from-global-scope="PwnboardUI.StatCard" label="Findings" value="{{ stats.findings }}" color="#ffd700" hint-size="auto,116px"></x-import>
+            <x-import component-from-global-scope="PwnboardUI.StatCard" label="Tools online" value="{{ stats.tools }}" color="#00ff88" hint-size="auto,116px"></x-import>
+            <x-import component-from-global-scope="PwnboardUI.StatCard" label="Assets mapped" value="{{ stats.assets }}" color="#ff6b35" hint-size="auto,116px"></x-import>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;">
+            <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,360px">
+              <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;align-self:flex-start;">Core status</span>
+                <div style="margin:14px 0 6px;"><x-import component-from-global-scope="PwnboardUI.ArcReactor" size="{{ arcBig }}" hint-size="140px,140px"></x-import></div>
+                <div style="font-size:20px;letter-spacing:3px;color:#00ff88;text-shadow:0 0 12px rgba(0,255,136,.5);">ALL SYSTEMS GO</div>
+                <div style="font-size:11px;color:#4a6a8a;letter-spacing:1px;margin-top:4px;">quantized ollama · llama3-pentest-q4 · loaded</div>
+                <div style="width:100%;margin-top:22px;display:flex;flex-direction:column;gap:14px;">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:#8aa0b8;margin-bottom:5px;"><span>GPU · inference</span><span style="color:#00d4ff;">{{ vitals.gpu }}%</span></div>
+                    <x-import component-from-global-scope="PwnboardUI.ProgressBar" value="{{ vitals.gpu }}" hint-size="100%,8px"></x-import>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:#8aa0b8;margin-bottom:5px;"><span>CPU · scans</span><span style="color:#00d4ff;">{{ vitals.cpu }}%</span></div>
+                    <x-import component-from-global-scope="PwnboardUI.ProgressBar" value="{{ vitals.cpu }}" hint-size="100%,8px"></x-import>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:#8aa0b8;margin-bottom:5px;"><span>TOR · circuit health</span><span style="color:#00d4ff;">{{ vitals.tor }}%</span></div>
+                    <x-import component-from-global-scope="PwnboardUI.ProgressBar" value="{{ vitals.tor }}" hint-size="100%,8px"></x-import>
+                  </div>
+                </div>
+              </div>
+            </x-import>
+            <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,360px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;">Activity stream</span>
+                <span style="font-size:10px;color:#4a6a8a;letter-spacing:1px;">live</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px;max-height:290px;overflow:auto;">
+                <sc-for list="{{ activity }}" as="a" hint-placeholder-count="7">
+                  <div style="display:flex;gap:10px;font-size:12px;line-height:1.5;">
+                    <span style="color:#4a6a8a;flex:0 0 62px;">{{ a.t }}</span>
+                    <span style="{{ a.dot }}"></span>
+                    <span style="color:#a9bccb;flex:1;">{{ a.msg }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </x-import>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- TOOL LAUNCHER -->
+      <sc-if value="{{ isLauncher }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:26px;">
+          <sc-for list="{{ toolSections }}" as="sec" hint-placeholder-count="3">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;">{{ sec.title }}</span>
+                <span style="flex:1;height:1px;background:linear-gradient(90deg,#16283a,transparent);"></span>
+                <span style="font-size:10px;color:#4a6a8a;letter-spacing:1px;">{{ sec.count }} modules</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;">
+                <sc-for list="{{ sec.tools }}" as="tool" hint-placeholder-count="6">
+                  <div onClick="{{ tool.onClick }}" style="position:relative;border:1px solid #16283a;background:linear-gradient(160deg,#0a121d,#070d16);padding:15px 15px 17px;cursor:pointer;overflow:hidden;transition:border-color .2s,transform .2s,background .2s;" style-hover="border-color:#00d4ff;transform:translateY(-2px);background:linear-gradient(160deg,#0d1826,#08101b);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;">
+                      <span style="{{ tool.tag }}">{{ tool.cat }}</span>
+                      <span style="font-size:13px;color:#4a6a8a;">▸</span>
+                    </div>
+                    <div style="font-size:14.5px;color:#dbe6f0;letter-spacing:.5px;margin-bottom:5px;">{{ tool.name }}</div>
+                    <div style="font-size:11px;color:#7f95a8;line-height:1.5;min-height:32px;">{{ tool.desc }}</div>
+                    <div style="{{ tool.accent }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- OSINT WORKSPACE -->
+      <sc-if value="{{ isOsint }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;">
+          <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,420px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;margin-bottom:14px;">OSINT modules</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <sc-for list="{{ osintModules }}" as="o" hint-placeholder-count="8">
+                <div onClick="{{ o.onClick }}" style="{{ o.style }}">
+                  <span style="width:16px;">›</span>
+                  <span style="flex:1;">{{ o.name }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,420px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <span style="font-size:15px;color:#dbe6f0;letter-spacing:1px;">{{ osintActiveName }}</span>
+              <span style="font-size:10px;letter-spacing:2px;color:#4a6a8a;text-transform:uppercase;">OSINT · passive</span>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:18px;">
+              <div style="flex:1;">
+                <x-import component-from-global-scope="PwnboardUI.Input" value="{{ osintQuery }}" onChange="{{ onOsintQuery }}" placeholder="target@domain.com  ·  8.8.8.8  ·  @handle" dc-props="{{ inputFull }}" hint-size="100%,42px"></x-import>
+              </div>
+              <div onClick="{{ runOsint }}" style="display:inline-block;cursor:pointer;">
+                <x-import component-from-global-scope="PwnboardUI.Button" hint-size="auto,42px">Run trace</x-import>
+              </div>
+            </div>
+            <sc-if value="{{ osintRunning }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:46px 0;">
+                <x-import component-from-global-scope="PwnboardUI.Spinner" size="{{ spinSize }}" hint-size="40px,40px"></x-import>
+                <span style="font-size:12px;color:#00d4ff;letter-spacing:1.5px;">QUERYING SOURCES…</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showOsintResults }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="PwnboardUI.DataTable" columns="{{ osintColumns }}" rows="{{ osintResults }}" row-key="{{ osintRowKey }}" empty-message="NO SIGNALS" hint-size="100%,240px"></x-import>
+            </sc-if>
+            <sc-if value="{{ osintIdle }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:46px 0;text-align:center;color:#3f5a72;font-size:12px;letter-spacing:1px;">— enter a target and run a trace —</div>
+            </sc-if>
+          </x-import>
+        </div>
+      </sc-if>
+
+      <!-- MONITOR -->
+      <sc-if value="{{ isMonitor }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;">Active operations · {{ jobCount }}</span>
+            <div onClick="{{ clearDone }}" style="display:inline-block;cursor:pointer;">
+              <x-import component-from-global-scope="PwnboardUI.Button" hint-size="auto,38px">Clear completed</x-import>
+            </div>
+          </div>
+          <sc-if value="{{ hasJobs }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ jobsView }}" as="j" hint-placeholder-count="3">
+                <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,150px">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <span style="font-size:14px;color:#dbe6f0;letter-spacing:.5px;">{{ j.tool }}</span>
+                      <span style="{{ j.tagStyle }}">{{ j.cat }}</span>
+                    </div>
+                    <x-import component-from-global-scope="PwnboardUI.StatusBadge" status="{{ j.status }}" hint-size="auto,24px"></x-import>
+                  </div>
+                  <div style="font-size:11.5px;color:#7f95a8;margin-bottom:11px;letter-spacing:.5px;">target {{ j.target }}  ·  {{ j.cmd }}</div>
+                  <x-import component-from-global-scope="PwnboardUI.ProgressBar" value="{{ j.progress }}" hint-size="100%,8px"></x-import>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:11px;">
+                    <span style="font-size:11px;color:#8aa0b8;">{{ j.progressLabel }}</span>
+                    <sc-if value="{{ j.abortable }}" hint-placeholder-val="{{ true }}">
+                      <div onClick="{{ j.onAbort }}" style="display:inline-block;cursor:pointer;">
+                        <x-import component-from-global-scope="PwnboardUI.Button" variant="danger" hint-size="auto,32px">Abort</x-import>
+                      </div>
+                    </sc-if>
+                  </div>
+                </x-import>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noJobs }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,160px">
+              <div style="padding:34px 0;text-align:center;color:#3f5a72;font-size:12px;letter-spacing:1px;">no operations running — launch a tool from the grid</div>
+            </x-import>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- SETTINGS -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+          <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,260px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;margin-bottom:16px;">Engagement</div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <sc-for list="{{ toggles }}" as="t" hint-placeholder-count="4">
+                <div onClick="{{ t.onClick }}" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+                  <div style="display:flex;flex-direction:column;gap:2px;">
+                    <span style="font-size:13px;color:#c8d6e4;">{{ t.name }}</span>
+                    <span style="font-size:10.5px;color:#5a7286;">{{ t.desc }}</span>
+                  </div>
+                  <div style="{{ t.track }}"><div style="{{ t.knob }}"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="PwnboardUI.Card" hint-size="100%,260px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#00d4ff;margin-bottom:16px;">AI core</div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <span style="font-size:11px;letter-spacing:1px;color:#7f95a8;">Local model</span>
+                <select class="pwn-native" value="{{ model }}" onChange="{{ onModel }}">
+                  <sc-for list="{{ models }}" as="m" hint-placeholder-count="4"><option value="{{ m }}">{{ m }}</option></sc-for>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <span style="font-size:11px;letter-spacing:1px;color:#7f95a8;">SOCKS proxy</span>
+                <input class="pwn-native" style="padding:9px 11px;font-size:12px;" value="{{ proxy }}" onChange="{{ onProxy }}" />
+              </div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <span style="font-size:11px;letter-spacing:1px;color:#7f95a8;">Engagement scope (CIDR)</span>
+                <input class="pwn-native" style="padding:9px 11px;font-size:12px;" value="{{ scope }}" onChange="{{ onScope }}" />
+              </div>
+            </div>
+          </x-import>
+        </div>
+      </sc-if>
+
+      <!-- TERMINAL -->
+      <sc-if value="{{ isTerminal }}" hint-placeholder-val="{{ true }}">
+        <x-import component-from-global-scope="PwnboardUI.Card" padding="none" hint-size="100%,520px">
+          <div style="background:#04080e;padding:8px 14px;border-bottom:1px solid #12202e;display:flex;align-items:center;gap:8px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:#ff0040;"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:#ffd700;"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:#00ff88;"></span>
+            <span style="margin-left:8px;font-size:11px;color:#4a6a8a;letter-spacing:1px;">root@pwnboard — /opt/pwnboard</span>
+          </div>
+          <div ref="{{ termRef }}" style="background:#04080e;height:452px;overflow:auto;padding:14px 16px;font-size:12.5px;line-height:1.65;">
+            <sc-for list="{{ terminal }}" as="line" hint-placeholder-count="12">
+              <div style="{{ line.style }}">{{ line.text }}</div>
+            </sc-for>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+              <span style="color:#00ff88;">root@pwnboard</span><span style="color:#4a6a8a;">:</span><span style="color:#00d4ff;">~#</span>
+              <input class="pwn-native" style="flex:1;border:none;background:transparent;font-size:12.5px;padding:2px 0;" value="{{ cmd }}" onChange="{{ onCmd }}" onKeyDown="{{ onCmdKey }}" placeholder="type a command — try: help, scan 10.10.14.7, clear" />
+            </div>
+          </div>
+        </x-import>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.jid = 0;
+    this.termRef = React.createRef();
+    this.state = {
+      screen: 'command',
+      jobs: [],
+      terminal: [],
+      activity: [],
+      findings: 3,
+      vitals: { cpu: 34, gpu: 61, tor: 92 },
+      clock: this._now(),
+      osintTool: 'mail',
+      osintQuery: '',
+      osintResults: null,
+      osintRunning: false,
+      settings: { safeMode:true, tor:true, autoExploit:false, telemetry:false },
+      model: 'llama3-pentest-q4',
+      proxy: '127.0.0.1:9050',
+      scope: '10.10.14.0/24',
+      cmd: '',
+    };
+    this.TARGET = '10.10.14.7';
+    this.KALI = [
+      ['nmap','Network mapper — service & version detection','#00d4ff','nmap -sV -sC -p- {t}'],
+      ['Metasploit','Exploit framework & payload delivery','#ff6b35','msfconsole -q'],
+      ['Burp Suite','Intercepting web proxy & scanner','#ffd700','burpsuite --project {t}'],
+      ['Hydra','Parallelised login brute-forcer','#ff0040','hydra -L users.txt -P rock.txt {t} ssh'],
+      ['sqlmap','Automated SQL injection & takeover','#ff6b35','sqlmap -u {t} --batch --dbs'],
+      ['Aircrack-ng','802.11 WEP/WPA key cracking','#00d4ff','aircrack-ng capture.cap'],
+      ['John the Ripper','Offline password cracker','#ffd700','john --wordlist=rock.txt hash.txt'],
+      ['Wireshark','Deep packet capture & analysis','#00d4ff','tshark -i eth0 -w cap.pcap'],
+      ['Nikto','Web server vulnerability scan','#ffd700','nikto -h {t}'],
+      ['Gobuster','Directory & DNS brute-forcing','#00d4ff','gobuster dir -u {t} -w big.txt'],
+      ['Hashcat','GPU-accelerated hash recovery','#ff0040','hashcat -m 22000 hash.hc22000'],
+      ['Responder','LLMNR/NBT-NS/MDNS poisoner','#ff6b35','responder -I eth0 -wrf'],
+    ].map((x,i)=>({ id:'k'+i, name:x[0], cat:'KALI', color:x[1], desc:x[2]||'', cmd:x[3] }));
+    this.OSINT = [
+      ['mail','Mail access / breach lookup'],
+      ['ipcam','IP camera finder'],
+      ['username','Username / social recon'],
+      ['domain','Domain / WHOIS'],
+      ['phone','Phone number lookup'],
+      ['geo','Geolocation / IP intel'],
+      ['shodan','Shodan-style host search'],
+      ['meta','Metadata extractor'],
+    ].map(x=>({ id:x[0], name:x[1], cat:'OSINT', color:'#00ff88', desc:x[1] }));
+    this.AI = [
+      ['ollama','Quantized Ollama — pentest reasoning core','#00ff88','ollama run llama3-pentest-q4'],
+      ['adb','ADB advanced jailbreak / device root','#ff6b35','adb shell su -c "magisk --install"'],
+      ['ios','iOS jailbreak — AI-assisted exploit chain','#ff0040','palera1n --ai-chain {t}'],
+      ['exploit','AI exploit suggester (CVE → PoC)','#ffd700','pwn-ai suggest --target {t}'],
+      ['report','AI report writer — PTES / OWASP','#00d4ff','pwn-ai report --format pdf'],
+    ].map((x,i)=>({ id:'a'+i, name:x[0]==='ollama'?'Quantized Ollama':x[0]==='adb'?'ADB Jailbreak':x[0]==='ios'?'iOS Jailbreak AI':x[0]==='exploit'?'AI Exploit Suggester':'AI Report Writer', cat:'AI', color:x[2], desc:x[1], cmd:x[3] }));
+  }
+
+  _now(){ return new Date().toLocaleTimeString('en-GB',{hour12:false}); }
+
+  componentDidMount(){
+    this._seed();
+    this._timer = setInterval(()=>this._tick(), 850);
+  }
+  componentWillUnmount(){ clearInterval(this._timer); }
+  componentDidUpdate(){
+    const el = this.termRef.current;
+    if (el && this.state.screen==='terminal') el.scrollTop = el.scrollHeight;
+  }
+
+  _seed(){
+    const boot = [
+      'PWNBOARD OS v4.4.4 — GODMODE kernel',
+      '[*] mounting quantized ollama · llama3-pentest-q4 … ok',
+      '[*] tor circuit established · 3 hops · exit DE',
+      '[+] 25 tool modules registered',
+      '[*] operator sebbeboia authenticated',
+      'ready.',
+    ];
+    this.setState({
+      terminal: boot.map(t=>({ text:t, style:this._lineStyle(t) })),
+      jobs: [
+        { id:++this.jid, tool:'nmap', cat:'KALI', color:'#00d4ff', target:this.TARGET, cmd:'nmap -sV -sC -p- '+this.TARGET, progress:44, status:'running' },
+        { id:++this.jid, tool:'Quantized Ollama', cat:'AI', color:'#00ff88', target:'local', cmd:'ollama run llama3-pentest-q4', progress:100, status:'completed' },
+      ],
+      activity: [
+        { t:this._now(), msg:'nmap scan started on '+this.TARGET, color:'#00d4ff' },
+        { t:this._now(), msg:'ollama core warmed — 41 tok/s', color:'#00ff88' },
+        { t:this._now(), msg:'tor exit rotated to DE-frankfurt-03', color:'#ffd700' },
+      ].map(a=>({ ...a, dot:this._dot(a.color) })),
+    });
+  }
+
+  _dot(c){ return `width:7px;height:7px;border-radius:50%;flex:0 0 7px;margin-top:6px;background:${c};box-shadow:0 0 7px ${c};`; }
+
+  _lineStyle(t){
+    let c = '#6b8299';
+    if (t.startsWith('[+]')) c = '#00ff88';
+    else if (t.startsWith('[!]')) c = '#ff6b35';
+    else if (t.startsWith('[-]') || /error|denied|fail/i.test(t)) c = '#ff0040';
+    else if (t.startsWith('[*]')) c = '#00d4ff';
+    else if (t.startsWith('>')) c = '#dbe6f0';
+    else if (t==='ready.') c = '#00ff88';
+    return `color:${c};white-space:pre-wrap;word-break:break-word;`;
+  }
+
+  _pushTerm(lines){
+    const arr = Array.isArray(lines) ? lines : [lines];
+    this.setState(s=>({ terminal: [...s.terminal, ...arr.map(t=>({ text:t, style:this._lineStyle(t) }))].slice(-160) }));
+  }
+  _pushActivity(msg, color){
+    this.setState(s=>({ activity: [{ t:this._now(), msg, color, dot:this._dot(color) }, ...s.activity].slice(0,9) }));
+  }
+
+  setScreen(s){ this.setState({ screen:s }); }
+
+  launchTool(tool){
+    if (tool.cat === 'OSINT'){ this.setState({ screen:'osint', osintTool:tool.id, osintResults:null, osintRunning:false }); return; }
+    const job = { id:++this.jid, tool:tool.name, cat:tool.cat, color:tool.color, target:this.TARGET, cmd:(tool.cmd||'run').replace('{t}', this.TARGET), progress:2, status:'running' };
+    this.setState(s=>({ jobs:[job, ...s.jobs], screen:'monitor' }));
+    this._pushTerm([`[*] launching ${tool.name} → ${this.TARGET}`, `> ${job.cmd}`]);
+    this._pushActivity(`${tool.name} launched on ${this.TARGET}`, tool.color);
+  }
+  abort(id){
+    this.setState(s=>({ jobs: s.jobs.map(j=> j.id===id ? { ...j, status:'cancelled' } : j) }));
+    const j = this.state.jobs.find(x=>x.id===id);
+    if (j) this._pushTerm(`[!] operation aborted — ${j.tool}`);
+  }
+  clearDone(){ this.setState(s=>({ jobs: s.jobs.filter(j=> j.status==='running') })); }
+
+  _tick(){
+    this.setState(s=>{
+      const v = s.vitals;
+      const rw = (x,lo,hi)=> Math.max(lo, Math.min(hi, x + (Math.random()*10-5)));
+      const jobs = s.jobs.map(j=>{
+        if (j.status!=='running') return j;
+        const np = j.progress + (2 + Math.random()*9);
+        if (np >= 100){
+          this._afterComplete(j);
+          return { ...j, progress:100, status:'completed' };
+        }
+        if (Math.random() < 0.35) this._pushTerm(`[*] ${j.tool}: ${this._scanLine(j)}`);
+        return { ...j, progress:np };
+      });
+      return {
+        clock: this._now(),
+        vitals: { cpu: Math.round(rw(v.cpu, s.jobs.some(j=>j.status==='running')?38:12, 88)), gpu: Math.round(rw(v.gpu, 30, 95)), tor: Math.round(rw(v.tor, 70, 99)) },
+        jobs,
+      };
+    });
+  }
+  _afterComplete(j){
+    const n = 1 + Math.floor(Math.random()*4);
+    setTimeout(()=>{
+      this._pushTerm(`[+] ${j.tool} finished — ${n} finding${n>1?'s':''}`);
+      this._pushActivity(`${j.tool} completed · ${n} findings`, j.color);
+      this.setState(s=>({ findings: s.findings + n }));
+    }, 0);
+  }
+  _scanLine(j){
+    const opts = ['discovered open port 443/tcp','fingerprinted OpenSSH 8.9p1','testing template 1204/10332','204/tcp filtered — retrying','banner grab: nginx/1.24.0','candidate credential match','handshake captured'];
+    return opts[Math.floor(Math.random()*opts.length)];
+  }
+
+  onOsintQuery(e){ this.setState({ osintQuery: e.target.value }); }
+  runOsint(){
+    const q = (this.state.osintQuery||'').trim();
+    if (!q){ this._pushTerm('[!] osint: no target supplied'); return; }
+    const mod = this.OSINT.find(o=>o.id===this.state.osintTool);
+    this.setState({ osintRunning:true, osintResults:null });
+    this._pushTerm([`[*] osint ${mod.id} trace → ${q}`]);
+    setTimeout(()=>{
+      const rows = this._osintRows(this.state.osintTool, q);
+      this.setState({ osintRunning:false, osintResults: rows });
+      this._pushTerm(`[+] osint ${mod.id}: ${rows.length} signals resolved`);
+      this._pushActivity(`${mod.name} → ${rows.length} signals on ${q}`, '#00ff88');
+    }, 1200);
+  }
+  _osintRows(tool, q){
+    const M = {
+      mail: [['breach: Collection#1','plaintext password recovered','critical'],['breach: LinkedIn 2021','bcrypt hash exposed','high'],['MX record', q.includes('@')?('mail.'+q.split('@')[1]):('mx.'+q), 'info'],['SPF','soft-fail — spoofable','medium'],['pwned count','7 breaches','high']],
+      ipcam: [['device','Hikvision DS-2CD','high'],['port 554/rtsp','stream open · no auth','critical'],['firmware','V5.4.5 — CVE-2021-36260','critical'],['geo','52.52, 13.40','info'],['snapshot','/onvif/snapshot reachable','high']],
+      username: [['github','sebbeboia · 42 repos','info'],['reddit','u/'+q+' · 3y old','low'],['reuse','same handle · 6 platforms','medium'],['email guess',''+q+'@proton.me','medium'],['avatar hash','matched on 2 sites','low']],
+      domain: [['registrar','NameCheap Inc','info'],['created','2019-04-11','info'],['NS','ns1.cloudflare.com','info'],['subdomains','14 resolved','medium'],['expired cert','staging.'+q,'high']],
+      phone: [['carrier','Telenor NO','info'],['type','mobile · VoLTE','info'],['region','Oslo','low'],['leaks','1 SMS-2FA breach','high'],['linked','2 messaging apps','medium']],
+      geo: [['asn','AS15169 Google','info'],['country','US · Mountain View','info'],['proxy','none detected','low'],['open ports','53, 443','medium'],['rdns','dns.google','info']],
+      shodan: [['host',q,'info'],['os','Ubuntu 22.04','info'],['ports','22,80,443,3306','high'],['3306/mysql','banner exposed','critical'],['tags','cloud, self-signed','medium']],
+      meta: [['author','j.doe','low'],['software','Adobe Photoshop 25.1','info'],['gps','48.85, 2.35','high'],['created','2024-11-02','info'],['device','iPhone 15 Pro','medium']],
+    };
+    return (M[tool]||[]).map((r,i)=>({ id:tool+i, k:r[0], v:r[1], sev:r[2] }));
+  }
+
+  toggle(key){ this.setState(s=>({ settings:{ ...s.settings, [key]: !s.settings[key] } })); }
+  onModel(e){ this.setState({ model:e.target.value }); this._pushTerm('[*] model set → '+e.target.value); }
+  onProxy(e){ this.setState({ proxy:e.target.value }); }
+  onScope(e){ this.setState({ scope:e.target.value }); }
+
+  onCmd(e){ this.setState({ cmd:e.target.value }); }
+  onCmdKey(e){
+    if (e.key !== 'Enter') return;
+    const c = (this.state.cmd||'').trim();
+    this.setState({ cmd:'' });
+    if (!c) return;
+    this._pushTerm('> '+c);
+    const parts = c.split(/\s+/);
+    if (c==='clear'){ this.setState({ terminal:[] }); return; }
+    if (c==='help'){ this._pushTerm(['available: help, whoami, tools, scan <ip>, clear','pipe anything else to the ai core with `ai <prompt>`']); return; }
+    if (c==='whoami'){ this._pushTerm('sebbeboia — uid=0(root) godmode'); return; }
+    if (c==='tools'){ this._pushTerm('[+] 12 kali · 8 osint · 5 ai modules online'); return; }
+    if (parts[0]==='scan'){ const t = parts[1]||this.TARGET; this._pushTerm([`[*] queuing nmap → ${t}`,`> nmap -sV -sC -p- ${t}`]); this.launchTool({ name:'nmap', cat:'KALI', color:'#00d4ff', cmd:'nmap -sV -sC -p- {t}' }); return; }
+    if (parts[0]==='ai'){ this._pushTerm(['[*] ollama · thinking…','[+] suggestion: try CVE-2021-36260 against the rtsp endpoint']); return; }
+    this._pushTerm('[-] command not found: '+parts[0]);
+  }
+
+  renderVals(){
+    const s = this.state;
+    const P = (typeof window!=='undefined' && window.PwnboardUI) || {};
+    const navDef = [
+      ['command','Command','◱'], ['launcher','Launcher','▦'], ['osint','OSINT','◈'],
+      ['monitor','Monitor','◉'], ['settings','Settings','⚙'], ['terminal','Terminal','›_'],
+    ];
+    const running = s.jobs.filter(j=>j.status==='running').length;
+    const navItems = navDef.map(([id,label,glyph])=>{
+      const active = s.screen===id;
+      return {
+        label, glyph,
+        onClick: ()=>this.setScreen(id),
+        badge: id==='monitor' ? running : 0,
+        style: `display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;font-size:12.5px;letter-spacing:.5px;transition:all .15s;border-left:2px solid ${active?'#00d4ff':'transparent'};background:${active?'rgba(0,212,255,.09)':'transparent'};color:${active?'#00d4ff':'#8aa0b8'};`,
+      };
+    });
+
+    const tag = (c)=>`font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:3px 7px;border:1px solid ${c}55;color:${c};background:${c}12;`;
+    const accent = (c)=>`position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,${c},transparent);`;
+    const mapTool = (t)=>({ ...t, onClick:()=>this.launchTool(t), tag: tag(t.color), accent: accent(t.color) });
+    const toolSections = [
+      { title:'Kali offensive suite', count:this.KALI.length, tools:this.KALI.map(mapTool) },
+      { title:'OSINT recon modules', count:this.OSINT.length, tools:this.OSINT.map(mapTool) },
+      { title:'AI & device exploitation', count:this.AI.length, tools:this.AI.map(mapTool) },
+    ];
+
+    const osintModules = this.OSINT.map(o=>{
+      const active = s.osintTool===o.id;
+      return { name:o.name, onClick:()=>this.setState({ osintTool:o.id, osintResults:null, osintRunning:false }),
+        style:`display:flex;align-items:center;gap:8px;padding:9px 11px;cursor:pointer;font-size:12px;letter-spacing:.5px;transition:all .15s;border:1px solid ${active?'#00ff8855':'transparent'};background:${active?'rgba(0,255,136,.08)':'transparent'};color:${active?'#00ff88':'#8aa0b8'};` };
+    });
+    const activeMod = this.OSINT.find(o=>o.id===s.osintTool) || this.OSINT[0];
+
+    const osintColumns = [
+      { header:'Signal', cell:(r)=>React.createElement('span',{style:{color:'#00d4ff',fontFamily:"'JetBrains Mono',monospace",fontSize:12}}, r.k) },
+      { header:'Detail', cell:(r)=>React.createElement('span',{style:{color:'#8aa0b8',fontSize:12}}, r.v) },
+      { header:'Risk', cell:(r)=> P.SeverityBadge ? React.createElement(P.SeverityBadge,{severity:r.sev}) : r.sev },
+    ];
+
+    const jobsView = s.jobs.map(j=>({
+      ...j,
+      progress: Math.round(j.progress),
+      progressLabel: j.status==='running' ? `${Math.round(j.progress)}% · streaming` : j.status==='completed' ? 'complete · results ready' : 'aborted by operator',
+      abortable: j.status==='running',
+      onAbort: ()=>this.abort(j.id),
+      tagStyle: tag(j.color),
+    }));
+
+    const swTrack = (on,c)=>`width:42px;height:22px;border-radius:999px;position:relative;transition:all .2s;background:${on?c:'#16283a'};box-shadow:${on?`0 0 10px ${c}55`:'none'};flex:0 0 42px;`;
+    const swKnob = (on)=>`position:absolute;top:2px;left:${on?'22px':'2px'};width:18px;height:18px;border-radius:50%;background:#04080e;transition:all .2s;`;
+    const tdef = [
+      ['safeMode','Safe mode','block destructive payloads','#00ff88'],
+      ['tor','Tor routing','anonymise all outbound traffic','#00d4ff'],
+      ['autoExploit','Auto-exploit','chain PoCs without confirmation','#ff0040'],
+      ['telemetry','Telemetry','phone home usage stats','#ffd700'],
+    ];
+    const toggles = tdef.map(([k,name,desc,c])=>({ name, desc, onClick:()=>this.toggle(k), track:swTrack(s.settings[k],c), knob:swKnob(s.settings[k]) }));
+
+    const titles = {
+      command:['COMMAND CENTER','operational overview · real-time'],
+      launcher:['TOOL LAUNCHER','25 modules · one-tap deployment'],
+      osint:['OSINT WORKSPACE','passive intelligence gathering'],
+      monitor:['OPERATION MONITOR','live scan & job telemetry'],
+      settings:['SYSTEM CONFIG','engagement & ai core'],
+      terminal:['CONSOLE','root shell · godmode'],
+    };
+
+    return {
+      arcSmall:34, arcBig:140, barsCount:14, spinSize:38,
+      clock:s.clock, threat:s.settings.autoExploit?'ELEVATED':'NOMINAL',
+      screenTitle:titles[s.screen][0], screenSub:titles[s.screen][1],
+      navItems,
+      isCommand:s.screen==='command', isLauncher:s.screen==='launcher', isOsint:s.screen==='osint',
+      isMonitor:s.screen==='monitor', isSettings:s.screen==='settings', isTerminal:s.screen==='terminal',
+      stats:{ active:running, findings:s.findings, tools:25, assets:47 },
+      vitals:s.vitals,
+      activity:s.activity,
+      toolSections,
+      osintModules, osintActiveName:activeMod.name,
+      osintQuery:s.osintQuery, onOsintQuery:(e)=>this.onOsintQuery(e), runOsint:()=>this.runOsint(),
+      inputFull:{ style:{ width:'100%' } },
+      osintRunning:s.osintRunning,
+      showOsintResults: !s.osintRunning && Array.isArray(s.osintResults),
+      osintIdle: !s.osintRunning && !Array.isArray(s.osintResults),
+      osintResults: s.osintResults || [],
+      osintColumns, osintRowKey:(r)=>r.id,
+      jobsView, jobCount:s.jobs.length, hasJobs:s.jobs.length>0, noJobs:s.jobs.length===0,
+      clearDone:()=>this.clearDone(),
+      toggles, models:['llama3-pentest-q4','qwen2.5-coder-q5','deepseek-r1-q4','mistral-nemo-q6'],
+      model:s.model, onModel:(e)=>this.onModel(e),
+      proxy:s.proxy, onProxy:(e)=>this.onProxy(e),
+      scope:s.scope, onScope:(e)=>this.onScope(e),
+      terminal:s.terminal, termRef:this.termRef,
+      cmd:s.cmd, onCmd:(e)=>this.onCmd(e), onCmdKey:(e)=>this.onCmdKey(e),
+    };
+  }
+}
+</script>
+</body>
+</html>

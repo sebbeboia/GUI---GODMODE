@@ -1,0 +1,376 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/brand/**",
+              "components/content/**",
+              "components/core/**",
+              "components/navigation/**",
+              "ui_kits/website/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Bricolage Grotesque|IBM Plex Mono|IBM Plex Sans))/i]",
+        "message": "Font not provided by the design system. Available: Bricolage Grotesque, IBM Plex Mono, IBM Plex Sans."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Brand'] > JSXAttribute > JSXIdentifier[name!=/^(?:href|label|dot|key|ref|className|style|children)$/]",
+        "message": "<Brand> doesn't accept that prop. Declared props: href, label, dot."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|href|arrow|magnetic|children|style|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, href, arrow, magnetic, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|ghost)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'ghost'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='arrow'] > Literal[value!=/^(?:right|up)$/]",
+        "message": "<Button> arrow must be one of 'right' | 'up'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CapabilityCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|items|key|ref|className|style|children)$/]",
+        "message": "<CapabilityCard> doesn't accept that prop. Declared props: title, items."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CustomCursor'] > JSXAttribute > JSXIdentifier[name!=/^(?:enabled|key|ref|className|style|children)$/]",
+        "message": "<CustomCursor> doesn't accept that prop. Declared props: enabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Eyebrow'] > JSXAttribute > JSXIdentifier[name!=/^(?:rule|key|ref|className|style|children)$/]",
+        "message": "<Eyebrow> doesn't accept that prop. Declared props: rule."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Grain'] > JSXAttribute > JSXIdentifier[name!=/^(?:opacity|asset|key|ref|className|style|children)$/]",
+        "message": "<Grain> doesn't accept that prop. Declared props: opacity, asset."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MailLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:email|key|ref|className|style|children)$/]",
+        "message": "<MailLink> doesn't accept that prop. Declared props: email."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NavBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:links|cta|forceScrolled|style|key|ref|className|style|children)$/]",
+        "message": "<NavBar> doesn't accept that prop. Declared props: links, cta, forceScrolled, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Orb'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|spin|pulse|pulseAmount|pulseSpeed|nearColor|farColor|subdiv|parallax|key|ref|className|style|children)$/]",
+        "message": "<Orb> doesn't accept that prop. Declared props: variant, size, spin, pulse, pulseAmount, pulseSpeed, nearColor, farColor, subdiv, parallax."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Orb'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:hero|contained|indicator|mark)$/]",
+        "message": "<Orb> variant must be one of 'hero' | 'contained' | 'indicator' | 'mark'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Reveal'] > JSXAttribute > JSXIdentifier[name!=/^(?:delay|as|children|key|ref|className|style|children)$/]",
+        "message": "<Reveal> doesn't accept that prop. Declared props: delay, as, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ScrollCue'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<ScrollCue> doesn't accept that prop. Declared props: label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionHead'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|index|key|ref|className|style|children)$/]",
+        "message": "<SectionHead> doesn't accept that prop. Declared props: label, index."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SiteFooter'] > JSXAttribute > JSXIdentifier[name!=/^(?:copyright|links|signoff|key|ref|className|style|children)$/]",
+        "message": "<SiteFooter> doesn't accept that prop. Declared props: copyright, links, signoff."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stat'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|key|ref|className|style|children)$/]",
+        "message": "<Stat> doesn't accept that prop. Declared props: value, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='WorkRow'] > JSXAttribute > JSXIdentifier[name!=/^(?:num|name|desc|tags|meta|href|external|style|key|ref|className|style|children)$/]",
+        "message": "<WorkRow> doesn't accept that prop. Declared props: num, name, desc, tags, meta, href, external, style."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "AmbientBackground": {
+        "replaces": []
+      },
+      "Brand": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "CapabilityCard": {
+        "replaces": []
+      },
+      "CustomCursor": {
+        "replaces": []
+      },
+      "Eyebrow": {
+        "replaces": []
+      },
+      "Grain": {
+        "replaces": []
+      },
+      "MailLink": {
+        "replaces": []
+      },
+      "NavBar": {
+        "replaces": []
+      },
+      "Orb": {
+        "replaces": []
+      },
+      "Reveal": {
+        "replaces": []
+      },
+      "ScrollCue": {
+        "replaces": []
+      },
+      "SectionHead": {
+        "replaces": []
+      },
+      "SiteFooter": {
+        "replaces": []
+      },
+      "Stat": {
+        "replaces": []
+      },
+      "Tag": {
+        "replaces": []
+      },
+      "WorkRow": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--accent",
+      "--accent-bright",
+      "--accent-deep",
+      "--accent-glow",
+      "--band-y",
+      "--bloom",
+      "--bloom-cool",
+      "--blur-nav",
+      "--border-default",
+      "--border-hairline",
+      "--border-hover",
+      "--dur-fast",
+      "--dur-mid",
+      "--dur-pulse",
+      "--dur-reveal",
+      "--dur-slow",
+      "--ease",
+      "--ease-out",
+      "--f-display",
+      "--f-mono",
+      "--f-sans",
+      "--faint",
+      "--grain-opacity",
+      "--grain-url",
+      "--grid-gap",
+      "--ground",
+      "--ground-2",
+      "--ground-fade",
+      "--gut",
+      "--hit",
+      "--lh-body",
+      "--lh-display",
+      "--lh-lead",
+      "--lh-tight",
+      "--line",
+      "--line-soft",
+      "--ls-body",
+      "--ls-brand",
+      "--ls-caps",
+      "--ls-display",
+      "--ls-eyebrow",
+      "--ls-hero",
+      "--ls-mono",
+      "--maxw",
+      "--measure",
+      "--measure-desc",
+      "--measure-lede",
+      "--muted",
+      "--nav-y",
+      "--nav-y-scrolled",
+      "--on-accent",
+      "--orb-far",
+      "--orb-lerp",
+      "--orb-near",
+      "--orb-spin",
+      "--radius-circle",
+      "--radius-focus",
+      "--radius-pill",
+      "--row-wash",
+      "--scrim-nav",
+      "--sec-head-gap",
+      "--size-cue",
+      "--size-tag",
+      "--space-1",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-5",
+      "--space-6",
+      "--space-7",
+      "--space-8",
+      "--space-9",
+      "--step--1",
+      "--step-0",
+      "--step-1",
+      "--step-2",
+      "--step-3",
+      "--step-4",
+      "--surface",
+      "--surface-2",
+      "--surface-card",
+      "--surface-card-hover",
+      "--surface-page",
+      "--text",
+      "--text-accent",
+      "--text-body",
+      "--text-meta",
+      "--text-strong",
+      "--w-body",
+      "--w-display",
+      "--w-strong",
+      "--work-y"
+    ],
+    "tokenKinds": {
+      "--ground": "color",
+      "--ground-2": "color",
+      "--surface": "color",
+      "--surface-2": "color",
+      "--line": "color",
+      "--line-soft": "color",
+      "--text": "font",
+      "--muted": "color",
+      "--faint": "color",
+      "--accent": "color",
+      "--accent-bright": "color",
+      "--accent-deep": "color",
+      "--accent-glow": "color",
+      "--orb-near": "color",
+      "--orb-far": "color",
+      "--text-body": "font",
+      "--text-strong": "font",
+      "--text-meta": "font",
+      "--text-accent": "font",
+      "--surface-page": "color",
+      "--surface-card": "color",
+      "--surface-card-hover": "color",
+      "--border-default": "color",
+      "--border-hairline": "color",
+      "--border-hover": "color",
+      "--on-accent": "color",
+      "--f-display": "font",
+      "--f-sans": "font",
+      "--f-mono": "font",
+      "--step--1": "other",
+      "--step-0": "other",
+      "--step-1": "other",
+      "--step-2": "other",
+      "--step-3": "other",
+      "--step-4": "other",
+      "--size-tag": "font",
+      "--size-cue": "font",
+      "--lh-display": "other",
+      "--lh-lead": "other",
+      "--lh-body": "other",
+      "--lh-tight": "other",
+      "--ls-display": "other",
+      "--ls-hero": "other",
+      "--ls-body": "other",
+      "--ls-mono": "other",
+      "--ls-brand": "other",
+      "--ls-eyebrow": "other",
+      "--ls-caps": "other",
+      "--w-display": "other",
+      "--w-body": "other",
+      "--w-strong": "other",
+      "--measure": "spacing",
+      "--measure-lede": "spacing",
+      "--measure-desc": "spacing",
+      "--maxw": "spacing",
+      "--gut": "spacing",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-5": "spacing",
+      "--space-6": "spacing",
+      "--space-7": "spacing",
+      "--space-8": "spacing",
+      "--space-9": "spacing",
+      "--band-y": "spacing",
+      "--sec-head-gap": "spacing",
+      "--work-y": "spacing",
+      "--grid-gap": "spacing",
+      "--nav-y": "spacing",
+      "--nav-y-scrolled": "spacing",
+      "--hit": "spacing",
+      "--ease": "other",
+      "--ease-out": "other",
+      "--dur-fast": "other",
+      "--dur-mid": "other",
+      "--dur-slow": "other",
+      "--dur-reveal": "other",
+      "--dur-pulse": "other",
+      "--orb-spin": "other",
+      "--orb-lerp": "other",
+      "--radius-pill": "radius",
+      "--radius-focus": "radius",
+      "--radius-circle": "radius",
+      "--bloom": "other",
+      "--bloom-cool": "other",
+      "--ground-fade": "other",
+      "--row-wash": "other",
+      "--blur-nav": "other",
+      "--scrim-nav": "color",
+      "--grain-opacity": "other",
+      "--grain-url": "other"
+    },
+    "fontFamilies": [
+      "Bricolage Grotesque",
+      "IBM Plex Mono",
+      "IBM Plex Sans"
+    ]
+  }
+}

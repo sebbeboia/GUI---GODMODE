@@ -1,0 +1,22 @@
+:root{
+  --maxw:1200px;
+  --gut:clamp(20px,5vw,88px); /* @kind spacing */
+
+  --space-1:5px;
+  --space-2:8px;
+  --space-3:10px;
+  --space-4:14px;
+  --space-5:18px;
+  --space-6:22px;
+  --space-7:26px;
+  --space-8:34px;
+  --space-9:44px;
+
+  --band-y:clamp(80px,12vw,160px); /* @kind spacing */
+  --sec-head-gap:clamp(40px,7vw,80px);
+  --work-y:clamp(22px,3vw,34px); /* @kind spacing */
+  --grid-gap:clamp(14px,3vw,40px);
+  --nav-y:18px;
+  --nav-y-scrolled:12px;
+  --hit:44px;
+}

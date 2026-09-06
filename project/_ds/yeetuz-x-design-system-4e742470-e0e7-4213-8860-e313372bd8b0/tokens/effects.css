@@ -1,0 +1,16 @@
+:root{
+  --radius-pill:999px;
+  --radius-focus:2px;
+  --radius-circle:50%;
+
+  --bloom:radial-gradient(120% 90% at 78% 8%,var(--accent-glow),transparent 46%); /* @kind other */
+  --bloom-cool:radial-gradient(90% 70% at 0% 100%,rgba(120,140,180,0.05),transparent 55%); /* @kind other */
+  --ground-fade:linear-gradient(180deg,var(--ground-2),var(--ground) 40%); /* @kind other */
+  --row-wash:linear-gradient(90deg,var(--accent-glow),transparent 60%); /* @kind other */
+
+  --blur-nav:blur(14px) saturate(140%); /* @kind other */
+  --scrim-nav:rgba(10,11,14,0.72);
+
+  --grain-opacity:0.5; /* @kind other */
+  --grain-url:url("../assets/grain.svg"); /* @kind other */
+}

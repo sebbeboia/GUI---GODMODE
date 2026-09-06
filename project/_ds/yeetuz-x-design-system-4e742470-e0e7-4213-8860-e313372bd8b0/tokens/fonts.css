@@ -1,0 +1,3 @@
+/* Webfonts are served from Google Fonts — the site's only external dependency.
+   Bricolage Grotesque (display), IBM Plex Sans (UI/body), IBM Plex Mono (labels, meta, code). */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");

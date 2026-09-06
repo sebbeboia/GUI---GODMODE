@@ -1,0 +1,38 @@
+:root{
+  --f-display:"Bricolage Grotesque","Georgia",serif; /* @kind font */
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; /* @kind font */
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular","Menlo",monospace; /* @kind font */
+
+  /* fluid scale, verbatim from source */
+  --step--1:clamp(0.78rem,0.74rem + 0.2vw,0.86rem); /* @kind other */
+  --step-0:clamp(1rem,0.96rem + 0.2vw,1.075rem); /* @kind other */
+  --step-1:clamp(1.2rem,1.1rem + 0.5vw,1.4rem); /* @kind other */
+  --step-2:clamp(1.6rem,1.35rem + 1.2vw,2.2rem); /* @kind other */
+  --step-3:clamp(2.3rem,1.7rem + 3vw,4rem); /* @kind other */
+  --step-4:clamp(2.5rem,1.5rem + 4vw,4.5rem); /* @kind other */
+
+  /* fixed small sizes used by tags / scroll cue */
+  --size-tag:0.72rem; /* @kind font */
+  --size-cue:0.7rem; /* @kind font */
+
+  --lh-display:1.02; /* @kind other */
+  --lh-lead:1.28; /* @kind other */
+  --lh-body:1.6; /* @kind other */
+  --lh-tight:1.05; /* @kind other */
+
+  --ls-display:-0.02em; /* @kind other */
+  --ls-hero:-0.035em; /* @kind other */
+  --ls-body:0.005em; /* @kind other */
+  --ls-mono:0.04em; /* @kind other */
+  --ls-brand:0.14em; /* @kind other */
+  --ls-eyebrow:0.24em; /* @kind other */
+  --ls-caps:0.12em; /* @kind other */
+
+  --w-display:500; /* @kind other */
+  --w-body:400; /* @kind other */
+  --w-strong:600; /* @kind other */
+
+  --measure:62ch; /* @kind spacing */
+  --measure-lede:46ch; /* @kind spacing */
+  --measure-desc:60ch; /* @kind spacing */
+}

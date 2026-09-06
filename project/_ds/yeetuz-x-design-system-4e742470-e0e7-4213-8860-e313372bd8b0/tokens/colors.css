@@ -1,0 +1,37 @@
+:root{
+  /* --- ground / surfaces (single committed dark theme) --- */
+  --ground:#0a0b0e;
+  --ground-2:#0c0e12;
+  --surface:#121419;
+  --surface-2:#191c23;
+  --line:#22262e;
+  --line-soft:#171a20;
+
+  /* --- text --- */
+  --text:#eceef1;
+  --muted:#9aa0ab;
+  --faint:#6b7280;
+
+  /* --- brass accent --- */
+  --accent:#e6a84c;
+  --accent-bright:#f4c579;
+  --accent-deep:#b9822f;
+  --accent-glow:rgba(230,168,76,0.16);
+
+  /* --- orb (WebGL depth ramp; rgb 0..1 equivalents in Orb.jsx) --- */
+  --orb-near:#f5c76b;
+  --orb-far:#8c99b8;
+
+  /* --- semantic aliases --- */
+  --text-body:var(--muted);
+  --text-strong:var(--text);
+  --text-meta:var(--faint);
+  --text-accent:var(--accent);
+  --surface-page:var(--ground);
+  --surface-card:var(--surface);
+  --surface-card-hover:var(--surface-2);
+  --border-default:var(--line);
+  --border-hairline:var(--line-soft);
+  --border-hover:var(--accent);
+  --on-accent:#0a0b0e;
+}
