@@ -143,6 +143,7 @@
     launcher: ["TOOL LAUNCHER", "25 modules \xB7 one-tap deployment"],
     osint: ["OSINT WORKSPACE", "passive intelligence gathering"],
     monitor: ["OPERATION MONITOR", "live scan & job telemetry"],
+    ai: ["AI CORE", "local model \xB7 reasoning"],
     settings: ["SYSTEM CONFIG", "engagement & ai core"],
     terminal: ["CONSOLE", "root shell \xB7 godmode"]
   };
@@ -151,6 +152,7 @@
     ["launcher", "Launcher", "\u25A6"],
     ["osint", "OSINT", "\u25C8"],
     ["monitor", "Monitor", "\u25C9"],
+    ["ai", "AI Core", "\u2726"],
     ["settings", "Settings", "\u2699"],
     ["terminal", "Terminal", "\u203A_"]
   ];
@@ -167,6 +169,7 @@
       this.jid = 0;
       this.termRef = React.createRef();
       this.inputRef = React.createRef();
+      this.aiRef = React.createRef();
       this.history = [];
       this.histIdx = -1;
       this.histDraft = "";
@@ -191,7 +194,10 @@
         cmd: "",
         live: false,
         cwd: "~",
-        busy: false
+        busy: false,
+        aiChat: [],
+        aiPrompt: "",
+        aiBusy: false
       };
     }
     _now() {
@@ -228,11 +234,23 @@
     componentWillUnmount() {
       clearInterval(this._timer);
     }
-    componentDidUpdate(prevProps, prevState) {
+    getSnapshotBeforeUpdate() {
       const el = this.termRef.current;
-      if (el && this.state.screen === "terminal") el.scrollTop = el.scrollHeight;
+      if (el && this.state.screen === "terminal") {
+        return el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+      }
+      return null;
+    }
+    componentDidUpdate(prevProps, prevState, atBottom) {
+      const el = this.termRef.current;
+      if (el && this.state.screen === "terminal" && (atBottom || prevState.screen !== "terminal")) {
+        el.scrollTop = el.scrollHeight;
+      }
       if (this.state.screen === "terminal" && prevState.screen !== "terminal" && this.inputRef.current) {
         this.inputRef.current.focus();
+      }
+      if (this.aiRef.current && this.state.screen === "ai") {
+        this.aiRef.current.scrollTop = this.aiRef.current.scrollHeight;
       }
     }
     _seed() {
@@ -888,7 +906,7 @@
     }
     renderTerminal() {
       const s = this.state;
-      return /* @__PURE__ */ React.createElement(Card, { padding: "none" }, /* @__PURE__ */ React.createElement("div", { style: { background: "#0A0C10", padding: "8px 14px", borderBottom: "1px solid #242C38", display: "flex", alignItems: "center", gap: 8 } }, /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#FF4D6D" } }), /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#FF7A45" } }), /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#C8F04B" } }), /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 8, fontSize: 11, color: "#667283", letterSpacing: 1, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, "root@pwnboard \u2014 ", s.live ? s.cwd : "/opt/pwnboard"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 9.5, letterSpacing: 1.5, color: s.live ? "#C8F04B" : "#667283" } }, s.live ? "LIVE" : "SIM")), /* @__PURE__ */ React.createElement("div", { ref: this.termRef, style: { background: "#0A0C10", height: 452, overflow: "auto", padding: "14px 16px", fontSize: 12.5, lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("div", { role: "log", "aria-live": "polite", "aria-label": "Terminal output" }, s.terminal.map((line, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: lineStyle(line.text) }, line.text))), s.busy && /* @__PURE__ */ React.createElement("div", { style: { color: "#667283", marginTop: 4, display: "flex", alignItems: "center", gap: 8 } }, /* @__PURE__ */ React.createElement(Spinner, { size: 12 }), " running\u2026"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6, marginTop: 4, opacity: s.busy ? 0.4 : 1 } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#C8F04B" } }, "root@pwnboard"), /* @__PURE__ */ React.createElement("span", { style: { color: "#667283" } }, ":"), /* @__PURE__ */ React.createElement("span", { style: { color: "#97A2B2" } }, s.live ? s.cwd : "~"), /* @__PURE__ */ React.createElement("span", { style: { color: "#C8F04B" } }, "#"), /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ React.createElement(Card, { padding: "none" }, /* @__PURE__ */ React.createElement("div", { style: { background: "#0A0C10", padding: "8px 14px", borderBottom: "1px solid #242C38", display: "flex", alignItems: "center", gap: 8 } }, /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#FF4D6D" } }), /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#FF7A45" } }), /* @__PURE__ */ React.createElement("span", { style: { width: 10, height: 10, borderRadius: "50%", background: "#C8F04B" } }), /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 8, fontSize: 11, color: "#667283", letterSpacing: 1, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, "root@pwnboard \u2014 ", s.live ? s.cwd : "/opt/pwnboard"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 9.5, letterSpacing: 1.5, color: s.live ? "#C8F04B" : "#667283" } }, s.live ? "LIVE" : "SIM")), /* @__PURE__ */ React.createElement("div", { ref: this.termRef, style: { background: "#0A0C10", height: 430, overflow: "auto", padding: "14px 16px", fontSize: 12.5, lineHeight: 1.65 } }, /* @__PURE__ */ React.createElement("div", { role: "log", "aria-live": "polite", "aria-label": "Terminal output" }, s.terminal.map((line, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: lineStyle(line.text) }, line.text))), s.busy && /* @__PURE__ */ React.createElement("div", { style: { color: "#667283", marginTop: 4, display: "flex", alignItems: "center", gap: 8 } }, /* @__PURE__ */ React.createElement(Spinner, { size: 12 }), " running\u2026")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6, padding: "10px 16px", borderTop: "1px solid #242C38", background: "#0A0C10", opacity: s.busy ? 0.4 : 1 } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#C8F04B" } }, "root@pwnboard"), /* @__PURE__ */ React.createElement("span", { style: { color: "#667283" } }, ":"), /* @__PURE__ */ React.createElement("span", { style: { color: "#97A2B2", maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, s.live ? s.cwd : "~"), /* @__PURE__ */ React.createElement("span", { style: { color: "#C8F04B" } }, "#"), /* @__PURE__ */ React.createElement(
         "input",
         {
           ref: this.inputRef,
@@ -904,7 +922,66 @@
           onKeyDown: (e) => this.onCmdKey(e),
           placeholder: s.busy ? "running\u2026 (one command at a time)" : "type a command \u2014 try help \xB7 \u2191/\u2193 history \xB7 Ctrl+L clear"
         }
-      ))));
+      )));
+    }
+    onAiPrompt(e) {
+      this.setState({ aiPrompt: e.target.value });
+    }
+    onAiKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        this.sendAi();
+      }
+    }
+    sendAi() {
+      const q = (this.state.aiPrompt || "").trim();
+      if (!q || this.state.aiBusy) return;
+      this.setState((st) => ({ aiChat: [...st.aiChat, { role: "you", text: q }], aiPrompt: "", aiBusy: true }));
+      const done = (text) => this.setState((st) => ({ aiChat: [...st.aiChat, { role: "ai", text }], aiBusy: false }));
+      if (this.live) {
+        api("/api/ai", { model: this.state.model, prompt: q }).then((r) => done(r && r.response || "(no response)")).catch((err) => done("[-] ai error: " + err.message));
+      } else {
+        setTimeout(() => done(`(simulated) I'd reason about "${q}" here. Start the local backend to get real answers from ${this.state.model}.`), 700);
+      }
+    }
+    renderAI() {
+      const s = this.state;
+      const models = s.models || MODELS;
+      return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("span", { style: SECTION_LABEL }, "Model"), /* @__PURE__ */ React.createElement(
+        "select",
+        {
+          className: "pwn-native",
+          "aria-label": "AI model",
+          name: "ai-model-page",
+          value: s.model,
+          onChange: (e) => this.onModel(e),
+          style: { minWidth: 260 }
+        },
+        models.map((m) => /* @__PURE__ */ React.createElement("option", { key: m, value: m }, m))
+      ), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: "#667283", letterSpacing: 0.5 } }, s.live ? `${models.length} local models \xB7 ollama` : "simulated \u2014 start the backend for real inference"))), /* @__PURE__ */ React.createElement(Card, { padding: "none" }, /* @__PURE__ */ React.createElement("div", { ref: this.aiRef, style: { height: 430, overflow: "auto", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 } }, s.aiChat.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { margin: "auto", textAlign: "center", color: "#3f5a72", fontSize: 12, letterSpacing: 1 } }, "\u2014 ask the local model anything \u2014"), s.aiChat.map((m, i) => /* @__PURE__ */ React.createElement("div", { key: i, style: { display: "flex", flexDirection: "column", alignItems: m.role === "you" ? "flex-end" : "flex-start" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 9.5, letterSpacing: 1.5, textTransform: "uppercase", color: m.role === "you" ? "#93B32E" : "#667283", marginBottom: 3 } }, m.role === "you" ? "you" : s.model), /* @__PURE__ */ React.createElement("div", { style: {
+        maxWidth: "80%",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-word",
+        fontSize: 12.5,
+        lineHeight: 1.6,
+        padding: "9px 12px",
+        borderLeft: `2px solid ${m.role === "you" ? "#C8F04B" : "#242C38"}`,
+        background: m.role === "you" ? "rgba(200,240,75,0.06)" : "#151A23",
+        color: "#E7EBF0"
+      } }, m.text))), s.aiBusy && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "#667283" } }, /* @__PURE__ */ React.createElement(Spinner, { size: 12 }), " ", s.model, " thinking\u2026")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10, padding: "12px 16px", borderTop: "1px solid #242C38" } }, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          className: "pwn-native",
+          "aria-label": "AI prompt",
+          name: "ai-prompt",
+          autoComplete: "off",
+          style: { flex: 1, padding: "10px 12px", fontSize: 13 },
+          value: s.aiPrompt,
+          onChange: (e) => this.onAiPrompt(e),
+          onKeyDown: (e) => this.onAiKey(e),
+          placeholder: "ask the local model\u2026  (Enter to send)"
+        }
+      ), /* @__PURE__ */ React.createElement(Button, { onClick: () => this.sendAi() }, "Send"))));
     }
     render() {
       const s = this.state;
@@ -922,7 +999,7 @@
           }
         },
         this.renderSidebar(running),
-        /* @__PURE__ */ React.createElement("div", { style: { flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column" } }, this.renderHeader(threat), /* @__PURE__ */ React.createElement("main", { id: "main", tabIndex: -1, style: { flex: 1, overflow: "auto", padding: "26px 28px", outline: "none" } }, s.screen === "command" && this.renderCommand(running), s.screen === "launcher" && this.renderLauncher(), s.screen === "osint" && this.renderOsint(), s.screen === "monitor" && this.renderMonitor(), s.screen === "settings" && this.renderSettings(), s.screen === "terminal" && this.renderTerminal()))
+        /* @__PURE__ */ React.createElement("div", { style: { flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column" } }, this.renderHeader(threat), /* @__PURE__ */ React.createElement("main", { id: "main", tabIndex: -1, style: { flex: 1, overflow: "auto", padding: "26px 28px", outline: "none" } }, s.screen === "command" && this.renderCommand(running), s.screen === "launcher" && this.renderLauncher(), s.screen === "osint" && this.renderOsint(), s.screen === "monitor" && this.renderMonitor(), s.screen === "ai" && this.renderAI(), s.screen === "settings" && this.renderSettings(), s.screen === "terminal" && this.renderTerminal()))
       );
     }
   };

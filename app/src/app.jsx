@@ -186,6 +186,7 @@ const TITLES = {
   launcher: ['TOOL LAUNCHER', '25 modules · one-tap deployment'],
   osint: ['OSINT WORKSPACE', 'passive intelligence gathering'],
   monitor: ['OPERATION MONITOR', 'live scan & job telemetry'],
+  ai: ['AI CORE', 'local model · reasoning'],
   settings: ['SYSTEM CONFIG', 'engagement & ai core'],
   terminal: ['CONSOLE', 'root shell · godmode'],
 };
@@ -195,6 +196,7 @@ const NAV_DEF = [
   ['launcher', 'Launcher', '▦'],
   ['osint', 'OSINT', '◈'],
   ['monitor', 'Monitor', '◉'],
+  ['ai', 'AI Core', '✦'],
   ['settings', 'Settings', '⚙'],
   ['terminal', 'Terminal', '›_'],
 ];
@@ -214,6 +216,7 @@ class Pwnboard extends React.Component {
     this.jid = 0;
     this.termRef = React.createRef();
     this.inputRef = React.createRef();
+    this.aiRef = React.createRef();
     this.history = [];       // command history (newest last)
     this.histIdx = -1;       // -1 = editing a fresh line
     this.histDraft = '';     // in-progress line stashed when browsing history
@@ -239,6 +242,9 @@ class Pwnboard extends React.Component {
       live: false,
       cwd: '~',
       busy: false,
+      aiChat: [],
+      aiPrompt: '',
+      aiBusy: false,
     };
   }
 
@@ -280,12 +286,29 @@ class Pwnboard extends React.Component {
   componentWillUnmount() {
     clearInterval(this._timer);
   }
-  componentDidUpdate(prevProps, prevState) {
+  getSnapshotBeforeUpdate() {
+    // Record whether the terminal log was scrolled to (near) the bottom before
+    // this update, so a background tick doesn't yank the user down while they
+    // scroll up to read output.
     const el = this.termRef.current;
-    if (el && this.state.screen === 'terminal') el.scrollTop = el.scrollHeight;
-    // Focus the prompt when the terminal opens.
+    if (el && this.state.screen === 'terminal') {
+      return el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+    }
+    return null;
+  }
+  componentDidUpdate(prevProps, prevState, atBottom) {
+    const el = this.termRef.current;
+    // Auto-scroll only when the user was already at the bottom, or when the
+    // terminal was just opened.
+    if (el && this.state.screen === 'terminal' && (atBottom || prevState.screen !== 'terminal')) {
+      el.scrollTop = el.scrollHeight;
+    }
     if (this.state.screen === 'terminal' && prevState.screen !== 'terminal' && this.inputRef.current) {
       this.inputRef.current.focus();
+    }
+    // Keep the AI chat pinned to the latest message.
+    if (this.aiRef.current && this.state.screen === 'ai') {
+      this.aiRef.current.scrollTop = this.aiRef.current.scrollHeight;
     }
   }
 
@@ -1143,7 +1166,8 @@ class Pwnboard extends React.Component {
           <span style={{ marginLeft: 8, fontSize: 11, color: '#667283', letterSpacing: 1, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>root@pwnboard — {s.live ? s.cwd : '/opt/pwnboard'}</span>
           <span style={{ fontSize: 9.5, letterSpacing: 1.5, color: s.live ? '#C8F04B' : '#667283' }}>{s.live ? 'LIVE' : 'SIM'}</span>
         </div>
-        <div ref={this.termRef} style={{ background: '#0A0C10', height: 452, overflow: 'auto', padding: '14px 16px', fontSize: 12.5, lineHeight: 1.65 }}>
+        {/* Scrollable log only — the prompt lives below so it never scrolls away. */}
+        <div ref={this.termRef} style={{ background: '#0A0C10', height: 430, overflow: 'auto', padding: '14px 16px', fontSize: 12.5, lineHeight: 1.65 }}>
           <div role="log" aria-live="polite" aria-label="Terminal output">
             {s.terminal.map((line, i) => (
               <div key={i} style={lineStyle(line.text)}>
@@ -1156,28 +1180,115 @@ class Pwnboard extends React.Component {
               <Spinner size={12} /> running…
             </div>
           )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, opacity: s.busy ? 0.4 : 1 }}>
-            <span style={{ color: '#C8F04B' }}>root@pwnboard</span>
-            <span style={{ color: '#667283' }}>:</span>
-            <span style={{ color: '#97A2B2' }}>{s.live ? s.cwd : '~'}</span>
-            <span style={{ color: '#C8F04B' }}>#</span>
-            <input
-              ref={this.inputRef}
-              className="pwn-native"
-              aria-label="Terminal command input"
-              name="terminal-command"
-              autoComplete="off"
-              spellCheck={false}
-              readOnly={s.busy}
-              style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 12.5, padding: '2px 0' }}
-              value={s.cmd}
-              onChange={(e) => this.onCmd(e)}
-              onKeyDown={(e) => this.onCmdKey(e)}
-              placeholder={s.busy ? 'running… (one command at a time)' : 'type a command — try help · ↑/↓ history · Ctrl+L clear'}
-            />
-          </div>
+        </div>
+        {/* Fixed prompt row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderTop: '1px solid #242C38', background: '#0A0C10', opacity: s.busy ? 0.4 : 1 }}>
+          <span style={{ color: '#C8F04B' }}>root@pwnboard</span>
+          <span style={{ color: '#667283' }}>:</span>
+          <span style={{ color: '#97A2B2', maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.live ? s.cwd : '~'}</span>
+          <span style={{ color: '#C8F04B' }}>#</span>
+          <input
+            ref={this.inputRef}
+            className="pwn-native"
+            aria-label="Terminal command input"
+            name="terminal-command"
+            autoComplete="off"
+            spellCheck={false}
+            readOnly={s.busy}
+            style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 12.5, padding: '2px 0' }}
+            value={s.cmd}
+            onChange={(e) => this.onCmd(e)}
+            onKeyDown={(e) => this.onCmdKey(e)}
+            placeholder={s.busy ? 'running… (one command at a time)' : 'type a command — try help · ↑/↓ history · Ctrl+L clear'}
+          />
         </div>
       </Card>
+    );
+  }
+
+  onAiPrompt(e) { this.setState({ aiPrompt: e.target.value }); }
+  onAiKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendAi(); } }
+  sendAi() {
+    const q = (this.state.aiPrompt || '').trim();
+    if (!q || this.state.aiBusy) return;
+    this.setState((st) => ({ aiChat: [...st.aiChat, { role: 'you', text: q }], aiPrompt: '', aiBusy: true }));
+    const done = (text) => this.setState((st) => ({ aiChat: [...st.aiChat, { role: 'ai', text }], aiBusy: false }));
+    if (this.live) {
+      api('/api/ai', { model: this.state.model, prompt: q })
+        .then((r) => done((r && r.response) || '(no response)'))
+        .catch((err) => done('[-] ai error: ' + err.message));
+    } else {
+      setTimeout(() => done(`(simulated) I'd reason about "${q}" here. Start the local backend to get real answers from ${this.state.model}.`), 700);
+    }
+  }
+  renderAI() {
+    const s = this.state;
+    const models = s.models || MODELS;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Card>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <span style={SECTION_LABEL}>Model</span>
+            <select
+              className="pwn-native"
+              aria-label="AI model"
+              name="ai-model-page"
+              value={s.model}
+              onChange={(e) => this.onModel(e)}
+              style={{ minWidth: 260 }}
+            >
+              {models.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+            <span style={{ fontSize: 11, color: '#667283', letterSpacing: 0.5 }}>
+              {s.live ? `${models.length} local models · ollama` : 'simulated — start the backend for real inference'}
+            </span>
+          </div>
+        </Card>
+        <Card padding="none">
+          <div ref={this.aiRef} style={{ height: 430, overflow: 'auto', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {s.aiChat.length === 0 && (
+              <div style={{ margin: 'auto', textAlign: 'center', color: '#3f5a72', fontSize: 12, letterSpacing: 1 }}>
+                — ask the local model anything —
+              </div>
+            )}
+            {s.aiChat.map((m, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: m.role === 'you' ? 'flex-end' : 'flex-start' }}>
+                <span style={{ fontSize: 9.5, letterSpacing: 1.5, textTransform: 'uppercase', color: m.role === 'you' ? '#93B32E' : '#667283', marginBottom: 3 }}>
+                  {m.role === 'you' ? 'you' : s.model}
+                </span>
+                <div style={{
+                  maxWidth: '80%', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 12.5, lineHeight: 1.6,
+                  padding: '9px 12px', borderLeft: `2px solid ${m.role === 'you' ? '#C8F04B' : '#242C38'}`,
+                  background: m.role === 'you' ? 'rgba(200,240,75,0.06)' : '#151A23', color: '#E7EBF0',
+                }}>
+                  {m.text}
+                </div>
+              </div>
+            ))}
+            {s.aiBusy && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#667283' }}>
+                <Spinner size={12} /> {s.model} thinking…
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 10, padding: '12px 16px', borderTop: '1px solid #242C38' }}>
+            <input
+              className="pwn-native"
+              aria-label="AI prompt"
+              name="ai-prompt"
+              autoComplete="off"
+              style={{ flex: 1, padding: '10px 12px', fontSize: 13 }}
+              value={s.aiPrompt}
+              onChange={(e) => this.onAiPrompt(e)}
+              onKeyDown={(e) => this.onAiKey(e)}
+              placeholder="ask the local model…  (Enter to send)"
+            />
+            <Button onClick={() => this.sendAi()}>Send</Button>
+          </div>
+        </Card>
+      </div>
     );
   }
 
@@ -1203,6 +1314,7 @@ class Pwnboard extends React.Component {
             {s.screen === 'launcher' && this.renderLauncher()}
             {s.screen === 'osint' && this.renderOsint()}
             {s.screen === 'monitor' && this.renderMonitor()}
+            {s.screen === 'ai' && this.renderAI()}
             {s.screen === 'settings' && this.renderSettings()}
             {s.screen === 'terminal' && this.renderTerminal()}
           </main>
