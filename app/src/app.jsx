@@ -772,6 +772,7 @@ class Pwnboard extends React.Component {
                 value={s.osintQuery}
                 onChange={(e) => this.onOsintQuery(e)}
                 placeholder="target@domain.com  ·  8.8.8.8  ·  @handle"
+                aria-label={`${activeMod.name} — target to trace`}
                 style={{ width: '100%' }}
               />
             </div>
@@ -887,7 +888,7 @@ class Pwnboard extends React.Component {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>Local model</span>
-              <select className="pwn-native" value={s.model} onChange={(e) => this.onModel(e)}>
+              <select className="pwn-native" aria-label="Local AI model" value={s.model} onChange={(e) => this.onModel(e)}>
                 {MODELS.map((m) => (
                   <option key={m} value={m}>
                     {m}
@@ -897,11 +898,11 @@ class Pwnboard extends React.Component {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>SOCKS proxy</span>
-              <input className="pwn-native" style={{ padding: '9px 11px', fontSize: 12 }} value={s.proxy} onChange={(e) => this.onProxy(e)} />
+              <input className="pwn-native" aria-label="SOCKS proxy address" style={{ padding: '9px 11px', fontSize: 12 }} value={s.proxy} onChange={(e) => this.onProxy(e)} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               <span style={{ fontSize: 11, letterSpacing: 1, color: '#7f95a8' }}>Engagement scope (CIDR)</span>
-              <input className="pwn-native" style={{ padding: '9px 11px', fontSize: 12 }} value={s.scope} onChange={(e) => this.onScope(e)} />
+              <input className="pwn-native" aria-label="Engagement scope (CIDR)" style={{ padding: '9px 11px', fontSize: 12 }} value={s.scope} onChange={(e) => this.onScope(e)} />
             </div>
           </div>
         </Card>
@@ -931,6 +932,7 @@ class Pwnboard extends React.Component {
             <span style={{ color: '#00d4ff' }}>~#</span>
             <input
               className="pwn-native"
+              aria-label="Terminal command input"
               style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 12.5, padding: '2px 0' }}
               value={s.cmd}
               onChange={(e) => this.onCmd(e)}
