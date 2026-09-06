@@ -1,0 +1,21 @@
+{
+  "name": "pwnboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PWNBOARD — a JARVIS-style pentest command HUD. Real-React implementation of the Claude Design PWNBOARD.dc.html handoff, built on the exported PwnboardUI design system.",
+  "scripts": {
+    "build": "esbuild src/app.jsx --bundle --format=iife --jsx-factory=React.createElement --jsx-fragment=React.Fragment --outfile=app.js",
+    "watch": "npm run build -- --watch",
+    "serve": "node server.mjs",
+    "start": "npm run build && npm run serve",
+    "verify": "node verify.mjs"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "playwright": "^1.48.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
